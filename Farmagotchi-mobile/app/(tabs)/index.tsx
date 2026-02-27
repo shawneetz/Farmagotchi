@@ -78,6 +78,27 @@ export default function DashboardScreen() {
     };
   });
 
+  // Apply periodic happiness bonuses for good weather and positive profit on mount
+  useEffect(() => {
+    let bonus = 0;
+    // Good weather bonus (Sun or Cloud)
+    if (weather.condition === 'sun' || weather.condition === 'cloud') {
+      bonus += 1.5;
+    }
+    // Positive profit bonus
+    if (isProfitPositive) {
+      bonus += 1.0;
+    }
+
+    if (bonus > 0) {
+      // Small delay to ensure store is ready and doesn't interfere with hydration
+      const timer = setTimeout(() => {
+        plant.updateHappiness(bonus);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isProfitPositive, plant, weather.condition]);
+
   const tooltipTranslateY = useSharedValue(0);
 
   useEffect(() => {

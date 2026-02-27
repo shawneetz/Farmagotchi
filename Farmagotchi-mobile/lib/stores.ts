@@ -63,16 +63,28 @@ const initialTransactions: Transaction[] = [
 export const useFinanceStore = create<FinanceState & FinanceAction>((set) => ({
   transactions: initialTransactions,
   addTransaction: (transaction) =>
-    set((state) => ({
-      transactions: [
-        ...state.transactions,
-        { ...transaction, id: Math.random().toString(36).substr(2, 9) },
-      ],
-    })),
+    set((state) => {
+      const happinessImpact = transaction.type === 'income' ? 2 : -2;
+      usePlantStore.getState().updateHappiness(happinessImpact);
+      return {
+        transactions: [
+          ...state.transactions,
+          { ...transaction, id: Math.random().toString(36).substr(2, 9) },
+        ],
+      };
+    }),
   removeTransaction: (id) =>
-    set((state) => ({
-      transactions: state.transactions.filter((t) => t.id !== id),
-    })),
+    set((state) => {
+      const transaction = state.transactions.find((t) => t.id === id);
+      if (transaction) {
+        // Reverse happiness impact when removing
+        const happinessImpact = transaction.type === 'income' ? -2 : 2;
+        usePlantStore.getState().updateHappiness(happinessImpact);
+      }
+      return {
+        transactions: state.transactions.filter((t) => t.id !== id),
+      };
+    }),
   editTransaction: (id, updates) =>
     set((state) => ({
       transactions: state.transactions.map((t) => (t.id === id ? { ...t, ...updates } : t)),
@@ -148,9 +160,22 @@ export const useTaskStore = create<TaskState & TaskAction>((set) => ({
       tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
     })),
   toggleTaskCompletion: (id) =>
-    set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === id ? { ...t, isCompleted: !t.isCompleted } : t)),
-    })),
+    set((state) => {
+      const task = state.tasks.find((t) => t.id === id);
+      if (task) {
+        if (!task.isCompleted) {
+          // Completed: Base reward + random increment (0-5)
+          const totalReward = task.happinessReward + Math.random() * 5;
+          usePlantStore.getState().updateHappiness(totalReward);
+        } else {
+          // Uncompleted: Subtract base reward
+          usePlantStore.getState().updateHappiness(-task.happinessReward);
+        }
+      }
+      return {
+        tasks: state.tasks.map((t) => (t.id === id ? { ...t, isCompleted: !t.isCompleted } : t)),
+      };
+    }),
   resetAllTasks: () =>
     set((state) => ({
       tasks: state.tasks.map((t) => ({ ...t, isCompleted: false })),
@@ -198,16 +223,26 @@ const initialMessages: Message[] = [
 export const useChatStore = create<ChatState & ChatAction>((set) => ({
   messages: initialMessages,
   addMessage: (message) =>
-    set((state) => ({
-      messages: [
-        ...state.messages,
-        {
-          ...message,
-          id: Math.random().toString(36).substr(2, 9),
-          timestamp: Date.now(),
-        },
-      ],
-    })),
+    set((state) => {
+      if (message.role === 'user') {
+        const isQuestion = message.content.includes('?');
+        const chance = isQuestion ? 0.6 : 0.3; // Incentivize questions
+        if (Math.random() < chance) {
+          const reward = 2 + Math.random() * 6; // Random 2-8 points
+          usePlantStore.getState().updateHappiness(reward);
+        }
+      }
+      return {
+        messages: [
+          ...state.messages,
+          {
+            ...message,
+            id: Math.random().toString(36).substr(2, 9),
+            timestamp: Date.now(),
+          },
+        ],
+      };
+    }),
   resetChat: () => set({ messages: initialMessages }),
 }));
 
@@ -275,6 +310,7 @@ export const useScanStore = create<ScanState & ScanAction>((set) => ({
       id: Math.random().toString(36).substr(2, 9),
       createdAt: Date.now(),
     };
+    usePlantStore.getState().updateHappiness(scan.happinessImpact);
     set((state) => ({
       scans: [newScan, ...state.scans],
       recentScan: newScan,
