@@ -14,11 +14,10 @@ export default function MainDashboardMockup() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
-        
         {/* Plant Progress Bar */}
-        <View className="flex-row items-center justify-center gap-2 mt-12 mx-auto w-[200px]">
+        <View className="mx-auto mt-12 w-[200px] flex-row items-center justify-center gap-2">
           <MaterialCommunityIcons name="seed" size={18} color="#71ac17" />
-          <View className="flex-1 h-3 rounded-full bg-[#d3d3ca] relative overflow-hidden">
+          <View className="relative h-3 flex-1 overflow-hidden rounded-full bg-[#d3d3ca]">
             <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '70.68%' }}>
               <Svg width="100%" height="100%">
                 <Defs>
@@ -31,37 +30,38 @@ export default function MainDashboardMockup() {
               </Svg>
             </View>
           </View>
-          <MaterialCommunityIcons name="food-apple-outline" size={18} color="#ccc"  />
+          <MaterialCommunityIcons name="food-apple-outline" size={18} color="#ccc" />
         </View>
 
         {/* Central Plant Area */}
-        <View className="items-center relative mt-8 h-[380px] justify-center">
+        <View className="relative mt-8 h-[380px] items-center justify-center">
           <View className="items-center">
-            <View className="w-[200px] h-[350px] overflow-visible z-10">
-              <Image 
-                source={require('../assets/tree.png')} 
-                style={{ width: '100%', height: '100%' }} 
-                contentFit="contain" 
+            <View className="z-10 h-[350px] w-[200px] overflow-visible">
+              <Image
+                source={require('../assets/tree.png')}
+                style={{ width: '100%', height: '100%' }}
+                contentFit="contain"
               />
             </View>
-            <View className="w-[160px] h-[100px] -mt-10">
-              <Image 
-                source={require('../assets/pot.png')} 
-                style={{ width: '100%', height: '100%' }} 
-                contentFit="contain" 
+            <View className="-mt-10 h-[100px] w-[160px]">
+              <Image
+                source={require('../assets/pot.png')}
+                style={{ width: '100%', height: '100%' }}
+                contentFit="contain"
               />
             </View>
           </View>
-          <View className="absolute bottom-0 bg-[rgba(40,41,47,0.8)] border border-black/20 px-4 py-1.5 rounded-lg shadow-sm">
-            <Text className="text-white text-base font-medium">Mango tree</Text>
+          <View className="absolute bottom-0 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
+            <Text className="text-base font-medium text-white">Mango tree</Text>
           </View>
         </View>
 
         {/* Bottom Container */}
-        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-16 px-4 py-6" style={styles.shadow}>
-          
+        <View
+          className="mt-16 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-6"
+          style={styles.shadow}>
           {/* Tasks Widget */}
-          <View className="w-full relative rounded-[19px] overflow-hidden mb-4" >
+          <View className="relative mb-4 w-full overflow-hidden rounded-[19px]">
             <View className="absolute inset-0">
               <Svg width="100%" height="100%">
                 <Defs>
@@ -73,20 +73,20 @@ export default function MainDashboardMockup() {
                 <Rect width="100%" height="100%" fill="url(#gradTasks)" />
               </Svg>
             </View>
-            <View className="p-4 relative min-h-[120px] justify-center">
-              <Feather 
-                name="check-circle" 
-                size={140} 
-                color="#000000" 
-                style={{ position: 'absolute', right: -20, top: -20, opacity: 0.1 }} 
+            <View className="relative min-h-[120px] justify-center p-4">
+              <Feather
+                name="check-circle"
+                size={140}
+                color="#000000"
+                style={{ position: 'absolute', right: -20, top: -20, opacity: 0.1 }}
               />
-              <Text className="text-[#454b31] text-sm mb-1 font-medium">Tasks</Text>
-              <View className="flex-row items-baseline gap-1 mb-3">
+              <Text className="mb-1 text-sm font-medium text-[#454b31]">Tasks</Text>
+              <View className="mb-3 flex-row items-baseline gap-1">
                 <Text className="text-3xl text-[#49561f]">2</Text>
                 <Text className="text-base text-[#698312]">/4</Text>
-                <Text className="text-xs text-[#49561f] ml-1">Completed Today</Text>
+                <Text className="ml-1 text-xs text-[#49561f]">Completed Today</Text>
               </View>
-              <View className="h-2 w-full rounded-full bg-[#f1f1ee] overflow-hidden">
+              <View className="h-2 w-full overflow-hidden rounded-full bg-[#f1f1ee]">
                 <View style={{ width: '50%', height: '100%' }}>
                   <Svg width="100%" height="100%">
                     <Defs>
@@ -103,30 +103,28 @@ export default function MainDashboardMockup() {
           </View>
 
           {/* Row for Net Profit and Weather */}
-          <View className="flex-row gap-4 h-[95px]">
+          <View className="h-[95px] flex-row gap-4">
             {/* Net Profit Widget */}
-            <View 
-              className="flex-[1_0_0] rounded-[19px] border border-[#e0e1e6] bg-[#f9fafa] p-4 justify-center"
-            >
-              <View className="flex-row items-center gap-1.5 mb-2">
+            <View className="flex-[1_0_0] justify-center rounded-[19px] border border-[#e0e1e6] bg-[#f9fafa] p-4">
+              <View className="mb-2 flex-row items-center gap-1.5">
                 <MaterialCommunityIcons name="cash-fast" size={16} color="#454b31" />
-                <Text className="text-[#454b31] text-[13px] font-medium" numberOfLines={1}>Net Profit (Week)</Text>
+                <Text className="text-[13px] font-medium text-[#454b31]" numberOfLines={1}>
+                  Net Profit (Week)
+                </Text>
               </View>
               <View className="flex-row items-center gap-1">
                 <Feather name="arrow-up" size={20} color="#454b32" />
-                <Text className="text-[22px] text-[#454b32] font-bold">₱120</Text>
+                <Text className="text-[22px] font-bold text-[#454b32]">₱120</Text>
               </View>
             </View>
 
             {/* Weather Widget */}
-            <View 
-              className="flex-[1_0_0] rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4 flex-row items-center gap-3"
-            >
+            <View className="flex-[1_0_0] flex-row items-center gap-3 rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4">
               <Feather name="cloud" size={40} color="#71ac17" />
               <View className="flex-shrink">
-                <Text className="text-[#7c7a65] text-xs font-medium">Los Baños</Text>
-                <Text className="text-[#575647] text-base font-bold">24°C/30°C</Text>
-                <Text className="text-[#9d9c88] text-[10px]">55% Humidity</Text>
+                <Text className="text-xs font-medium text-[#7c7a65]">Los Baños</Text>
+                <Text className="text-base font-bold text-[#575647]">24°C/30°C</Text>
+                <Text className="text-[10px] text-[#9d9c88]">55% Humidity</Text>
               </View>
             </View>
           </View>
