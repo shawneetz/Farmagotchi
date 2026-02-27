@@ -13,7 +13,6 @@ import Animated, {
   withSequence,
   Easing,
 } from 'react-native-reanimated';
-import { verifyInstallation } from 'nativewind';
 import {
   useTaskStore,
   useFinanceStore,
@@ -26,7 +25,6 @@ import {
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  verifyInstallation();
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
