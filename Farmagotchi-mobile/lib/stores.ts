@@ -156,3 +156,57 @@ export const useTaskStore = create<TaskState & TaskAction>((set) => ({
       tasks: state.tasks.map((t) => ({ ...t, isCompleted: false })),
     })),
 }));
+
+export type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: number;
+};
+
+type ChatState = {
+  messages: Message[];
+};
+
+type ChatAction = {
+  addMessage: (message: Omit<Message, 'id' | 'timestamp'>) => void;
+  resetChat: () => void;
+};
+
+const initialMessages: Message[] = [
+  {
+    id: '1',
+    role: 'assistant',
+    content: "Hi there! I'm your Mango tree. How can I help you today?",
+    timestamp: Date.now() - 1000 * 60 * 60 * 2, // 2 hours ago
+  },
+  {
+    id: '2',
+    role: 'user',
+    content: 'How are you feeling today? Do you need anything?',
+    timestamp: Date.now() - 1000 * 60 * 60, // 1 hour ago
+  },
+  {
+    id: '3',
+    role: 'assistant',
+    content:
+      "I'm feeling quite healthy! The weather in Los Baños has been perfect for my growth. Just make sure to check my soil moisture later!",
+    timestamp: Date.now() - 1000 * 60 * 30, // 30 mins ago
+  },
+];
+
+export const useChatStore = create<ChatState & ChatAction>((set) => ({
+  messages: initialMessages,
+  addMessage: (message) =>
+    set((state) => ({
+      messages: [
+        ...state.messages,
+        {
+          ...message,
+          id: Math.random().toString(36).substr(2, 9),
+          timestamp: Date.now(),
+        },
+      ],
+    })),
+  resetChat: () => set({ messages: initialMessages }),
+}));

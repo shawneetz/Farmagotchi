@@ -28,6 +28,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="add-resource" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="add-plot" options={{ headerShown: false }} />
+        <Stack.Screen name="chat" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="dark" />
     </SafeAreaProvider>

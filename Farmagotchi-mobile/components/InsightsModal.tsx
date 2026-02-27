@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { Modal, View, Text, Pressable, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { useTaskStore, useFinanceStore, useInsightsModal } from '../lib/stores';
 
 export default function InsightsModal() {
+  const router = useRouter();
   const visible = useInsightsModal((state) => state.visible);
   const close = useInsightsModal((state) => state.close);
 
@@ -126,7 +128,7 @@ export default function InsightsModal() {
             className="w-full flex-row items-center justify-center gap-2 rounded-2xl bg-[#71ac17] py-4 shadow-sm"
             onPress={() => {
               close();
-              // Future navigation to Chat
+              router.push('/chat');
             }}>
             <MaterialCommunityIcons name="chat-processing-outline" size={22} color="white" />
             <Text className="font-geist text-base font-bold text-white">Chat with your crop</Text>
