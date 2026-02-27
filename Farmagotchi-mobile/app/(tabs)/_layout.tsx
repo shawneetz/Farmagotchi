@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuBar } from 'components/MenuBar';
 
 export default function TabLayout() {
-  const { bottom } = useSafeAreaInsets();
   return (
     <>
       <Slot />
