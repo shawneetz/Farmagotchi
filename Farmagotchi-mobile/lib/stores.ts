@@ -31,6 +31,8 @@ type FinanceState = {
 type FinanceAction = {
   addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
   removeTransaction: (id: string) => void;
+  editTransaction: (id: string, updates: Partial<Transaction>) => void;
+  clearTransactions: () => void;
 };
 
 // Initial mock data based on the finance.tsx breakdown
@@ -59,6 +61,13 @@ export const useFinanceStore = create<FinanceState & FinanceAction>((set) => ({
     set((state) => ({
       transactions: state.transactions.filter((t) => t.id !== id),
     })),
+  editTransaction: (id, updates) =>
+    set((state) => ({
+      transactions: state.transactions.map((t) =>
+        t.id === id ? { ...t, ...updates } : t
+      ),
+    })),
+  clearTransactions: () => set({ transactions: [] }),
 }));
 
 export type TaskCategory = 'daily' | 'weekly' | 'miscellaneous';

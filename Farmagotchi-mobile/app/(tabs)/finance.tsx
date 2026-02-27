@@ -1,7 +1,8 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { useFinanceStore } from 'lib/stores';
+import { useRouter } from 'expo-router';
 
 const chartSvgXml = `
 <svg width="238" height="206" viewBox="0 0 237.898 205.745" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -42,6 +43,7 @@ const BreakdownItem = ({
 
 export default function FinanceScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const transactions = useFinanceStore((state) => state.transactions);
 
   const incomes = transactions.filter((t) => t.type === 'income');
@@ -124,9 +126,14 @@ export default function FinanceScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
-        <Text className="mb-2 mt-5 text-center font-['GeistPixel'] text-[16px] text-[#1D1E20]">
-          Projected Income this month
-        </Text>
+        <View className="flex-row items-center justify-between mt-5 mb-2">
+          <Text className="font-['GeistPixel'] text-[16px] text-[#1D1E20]">
+            Projected Income this month
+          </Text>
+          <Pressable onPress={() => router.push('/add-resource')} className="rounded-lg bg-neutral-200 px-3 py-1.5">
+            <Text className="font-['GeistPixel'] text-[12px] text-neutral-700">Manage</Text>
+          </Pressable>
+        </View>
 
         {/* Income Arc Section */}
         <View className="relative mb-2.5 mt-8 h-[180px] items-center justify-center">
