@@ -54,29 +54,9 @@ export default function MainDashboardMockup() {
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
         <View className="px-4">
-          {/* Header Section */}
-          <View className="mb-4 mt-2 flex-row items-center justify-between">
-            <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-[#f1f1ee]">
-              <Ionicons name="person-circle-outline" size={26} color="#4B3F35" />
-            </Pressable>
-
-            <Pressable className="flex-row items-center gap-2 rounded-full bg-[#f1f1ee] px-4 py-2">
-              <Text
-                className="text-lg font-bold text-rich-soil-brown"
-                style={{ fontFamily: 'GeistPixel' }}>
-                Tomato Patch
-              </Text>
-              <Ionicons name="chevron-down" size={16} color="#4B3F35" />
-            </Pressable>
-
-            <Pressable className="relative h-10 w-10 items-center justify-center rounded-full bg-[#f1f1ee]">
-              <Ionicons name="notifications" size={22} color="#4B3F35" />
-              <View className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border border-[#f1f1ee] bg-sunlit-gold" />
-            </Pressable>
-          </View>
 
           {/* Plant Progress Bar */}
-          <View className="mx-auto w-[200px] flex-row items-center justify-center gap-2">
+          <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
             <MaterialCommunityIcons name="seed" size={18} color="#71ac17" />
             <View className="relative h-3 flex-1 overflow-hidden rounded-full bg-[#d3d3ca]">
               <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '70.68%' }}>
@@ -112,7 +92,7 @@ export default function MainDashboardMockup() {
                 />
               </View>
             </Animated.View>
-            <View className="absolute bottom-0 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
+            <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
               <Text className="text-base font-medium text-white">Mango tree</Text>
             </View>
           </View>
@@ -140,9 +120,9 @@ export default function MainDashboardMockup() {
               <View className="relative min-h-[100px] justify-center p-4">
                 <Feather
                   name="check-circle"
-                  size={100}
+                  size={200}
                   color="#000000"
-                  style={{ position: 'absolute', right: -10, top: -10, opacity: 0.1 }}
+                  style={{ position: 'absolute', right: 10, top: -40, opacity: 0.1 }}
                 />
                 <Text className="mb-1 text-sm font-medium text-[#454b31]">Tasks</Text>
                 <View className="mb-2 flex-row items-baseline gap-1">
@@ -163,7 +143,7 @@ export default function MainDashboardMockup() {
                 <View className="mb-2 flex-row items-center gap-1.5">
                   <MaterialCommunityIcons name="cash-fast" size={16} color="#454b31" />
                   <Text className="text-[13px] font-medium text-[#454b31]" numberOfLines={1}>
-                    Net Profit
+                    Net Profit (Week)
                   </Text>
                 </View>
                 <View className="flex-row items-center gap-1">
