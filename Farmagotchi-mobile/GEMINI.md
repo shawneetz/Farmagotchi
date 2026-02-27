@@ -56,3 +56,7 @@ The project uses the Expo CLI for development.
 - `metro.config.js`: Metro bundler configuration with NativeWind integration.
 - `app.json`: Expo configuration file (name, slug, version, etc.).
 - `global.css`: Global styles and Tailwind directives.
+
+## Memory
+
+- **2026-02-27:** Implemented the Finance screen (`app/(tabs)/finance.tsx`) with 1:1 visual parity to Figma design. Switched the income arc to use `assets/chart.svg` via `expo-image` and updated all screen text to use the `GeistPixel` font family.
