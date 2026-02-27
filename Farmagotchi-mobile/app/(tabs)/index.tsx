@@ -129,11 +129,11 @@ export default function DashboardScreen() {
                   color="#000000"
                   style={{ position: 'absolute', right: 10, top: -40, opacity: 0.1 }}
                 />
-                <Text className="font-geist mb-1 text-sm font-medium text-[#454b31]">Tasks</Text>
+                <Text className="mb-1 font-geist text-sm font-medium text-[#454b31]">Tasks</Text>
                 <View className="mb-2 flex-row items-baseline gap-1">
                   <Text className="font-geist text-3xl text-[#49561f]">2</Text>
                   <Text className="font-geist text-base text-[#698312]">/4</Text>
-                  <Text className="font-geist ml-1 text-xs text-[#49561f]">Completed Today</Text>
+                  <Text className="ml-1 font-geist text-xs text-[#49561f]">Completed Today</Text>
                 </View>
                 <View className="h-2 w-full overflow-hidden rounded-full bg-white/30">
                   <View style={{ width: '50%', height: '100%', backgroundColor: '#49561f' }} />
@@ -147,7 +147,9 @@ export default function DashboardScreen() {
               <View className="flex-1 justify-center rounded-[19px] border border-[#e0e1e6] bg-white p-4">
                 <View className="mb-2 flex-row items-center gap-1.5">
                   <MaterialCommunityIcons name="cash-fast" size={16} color="#454b31" />
-                  <Text className="font-geist text-[13px] font-medium text-[#454b31]" numberOfLines={1}>
+                  <Text
+                    className="font-geist text-[13px] font-medium text-[#454b31]"
+                    numberOfLines={1}>
                     Net Profit (Week)
                   </Text>
                 </View>
@@ -161,7 +163,9 @@ export default function DashboardScreen() {
               <View className="flex-1 flex-row items-center gap-3 rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4">
                 <Feather name="cloud" size={32} color="#71ac17" />
                 <View className="flex-shrink">
-                  <Text className="font-geist text-[10px] font-medium text-[#7c7a65]">Los Baños</Text>
+                  <Text className="font-geist text-[10px] font-medium text-[#7c7a65]">
+                    Los Baños
+                  </Text>
                   <Text className="font-geist text-sm font-bold text-[#575647]">24°C/30°C</Text>
                 </View>
               </View>
