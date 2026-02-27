@@ -4,7 +4,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
-  const {bottom} = useSafeAreaInsets();
+  const { bottom } = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -29,8 +29,7 @@ export default function TabLayout() {
           alignItems: 'center',
           justifyContent: 'space-around',
         },
-      }}
-      >
+      }}>
       <Tabs.Screen
         name="index"
         options={{

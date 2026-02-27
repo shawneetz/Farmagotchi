@@ -53,17 +53,20 @@ export default function MainDashboardMockup() {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ padding: 16, gap: 16 }}
         showsVerticalScrollIndicator={false}>
-        
         {/* Header Section */}
-        <View className="flex-row items-center justify-between mb-4">
+        <View className="mb-4 flex-row items-center justify-between">
           <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-[#f1f1ee]">
             <Ionicons name="person-circle-outline" size={26} color="#4B3F35" />
           </Pressable>
 
           <Pressable className="flex-row items-center gap-2 rounded-full bg-[#f1f1ee] px-4 py-2">
-            <Text className="text-lg font-bold text-rich-soil-brown" style={{fontFamily: "GeistPixel"}}>Mango tree</Text>
+            <Text
+              className="text-lg font-bold text-rich-soil-brown"
+              style={{ fontFamily: 'GeistPixel' }}>
+              Mango tree
+            </Text>
             <Ionicons name="chevron-down" size={16} color="#4B3F35" />
-          </Pressable> 
+          </Pressable>
 
           <Pressable className="relative h-10 w-10 items-center justify-center rounded-full bg-[#f1f1ee]">
             <Ionicons name="notifications" size={22} color="#4B3F35" />
