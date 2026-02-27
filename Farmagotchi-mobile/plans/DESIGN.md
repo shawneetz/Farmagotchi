@@ -1,58 +1,191 @@
-# Farmagotchi Mobile - Brand Identity & Design Guide
+  Codebase Integration Rules (Figma & MCP)
 
-## Core Aesthetic
-**Keywords:** Warm, Comfortable, Agricultural, Earthy, Playful, Trusted.
 
-The design of Farmagotchi should feel like stepping onto a sunlit, welcoming farm. It must balance the serious utility of an agricultural management tool with the cozy, rewarding feeling of taking care of a digital pet. The interface should avoid sterile, overly corporate aesthetics in favor of organic shapes, soft lighting, and earthy textures.
+  This document outlines the architecture, styling
+  conventions, and integration rules for the Farmagotchi
+  mobile application. Adhere to these guidelines when
+  translating Figma designs into code.
 
-## 1. Color Palette
+  1. Design System Structure
 
-The color palette is inspired by nature: rich soils, golden wheat, leafy greens, and soft sunrises.
 
-### Primary Colors (The Earth & Growth)
-- **Earthy Green (Primary Brand Color):** `#4A7C59` - Represents healthy crops, growth, and vitality. Used for primary buttons, active states, and the main app header.
-- **Sunlit Gold (Accent/Secondary):** `#F4D35E` - Represents sunshine, harvest, and rewards. Used for notifications, happiness indicators, stars, and important highlights.
-- **Rich Soil Brown (Deep Neutral):** `#4B3F35` - Represents the foundation, stability, and earth. Used for primary text, deep borders, and solid backgrounds.
+  1.1 Token Definitions
+  Design tokens are primarily managed through Tailwind CSS and
+  a central TypeScript file.
 
-### Backgrounds & Surfaces (Warmth & Comfort)
-- **Morning Mist (App Background):** `#F9F6F0` - A warm, off-white with a hint of cream. Far softer on the eyes than pure white, giving a "parchment" or "canvas" feel.
-- **Soft Clay (Card Background):** `#F0E9DF` - Used for task cards, input fields, and widget backgrounds to create subtle elevation against the app background.
 
-### Semantic/Feedback Colors
-- **Harvest Red (Error/Alert):** `#C85A5A` - Used for critical crop alerts, missed tasks, or low pet happiness. Muted slightly so it doesn't clash with the natural palette.
-- **Clear Sky Blue (Information):** `#7FB3D5` - Used for weather updates, AI tips, and general information.
+   * Colors: Custom color tokens are defined in two locations
+     that must stay synchronized:
+       * tailwind.config.js (theme.extend.colors): Used for
+         className styling via NativeWind.
+       * src/lib/colors.ts: Exported as a strongly typed
+         colors constant for inline styles or programmatic use
+         in components where NativeWind cannot reach (e.g.,
+         chart libraries, third-party component props).
+   * Format: The project uses semantic naming for brand colors
+     (earthy-green, sunlit-gold, rich-soil-brown,
+     morning-mist, soft-clay, harvest-red, clear-sky-blue) and
+     a scale system for functional colors (primary-100 to
+     primary-900, neutral-100 to neutral-900).
+   * Typography: The app uses a custom font named GeistPixel.
+     It is configured in tailwind.config.js under
+     fontFamily.geist and loaded globally in app/_layout.tsx
+     using expo-font.
 
-## 2. Typography
+  2. Component Library
 
-Typography should be legible for utility but retain a friendly, slightly rustic or rounded character.
 
-- **Headings (Friendly & Sturdy):** A rounded sans-serif or a modern serif with soft edges (e.g., *Nunito*, *Quicksand*, or *Zilla Slab* if choosing a serif). This font should make the app feel approachable.
-- **Body Text (Clean & Readable):** A highly legible, simple sans-serif (e.g., *Inter* or *Roboto* but utilizing slightly increased letter-spacing and line-height).
+  2.1 Component Architecture
+   * Location: Reusable UI components are stored in the
+     /components/ directory (e.g., OptionModal.tsx).
+   * Pattern: Components follow standard React functional
+     component architecture using React Hooks.
+   * Documentation: There is currently no Storybook or formal
+     component documentation in place. Component usage must be
+     inferred from existing implementations within the /app/
+     directory.
+   * Props: Components must be strictly typed using TypeScript
+     interfaces.
 
-*Styling Rule:* Use the `Rich Soil Brown` for primary text rather than pure black (`#000000`) to maintain the warm aesthetic.
 
-## 3. UI Components & Shapes
+  3. Frameworks & Libraries
 
-- **Corner Radii:** Embrace soft, rounded corners. Buttons, cards, and modals should have a generous border-radius (e.g., `rounded-2xl` or `rounded-3xl` in Tailwind) to feel tactile and safe. Avoid sharp 90-degree angles.
-- **Shadows:** Use soft, diffused, warm drop-shadows rather than harsh, dark gray ones. A shadow should look like sunlight hitting an object, not a harsh spotlight.
-- **Borders:** Instead of thin gray lines, consider using slightly darker shades of the background color (e.g., a darker `Soft Clay`) to create separation, keeping the interface feeling cohesive and organic.
 
-## 4. Imagery & Illustration Style
+  3.1 Core Stack
+   * UI Framework: React Native (v0.81.5) and Expo (SDK 54).
+   * Routing: Expo Router (expo-router) using file-based
+     routing.
+   * Styling: Tailwind CSS (v3.4.19) integrated via NativeWind
+     (nativewind: latest).
+   * Animations: react-native-reanimated is set up for
+     high-performance animations.
+   * Charting: react-native-gifted-charts is available for
+     data visualization.
 
-- **The Pets (Farmagotchis):** 2D vector illustrations with thick, expressive outlines and solid, warm colors. They should look hand-drawn but clean, highly expressive, and clearly react to the user's actions.
-- **Icons:** Use filled, slightly rounded icons (e.g., *Feather Icons* modified to be thicker, or a custom set). Avoid overly thin, sharp "tech" icons.
-- **Empty States & Onboarding:** Utilize watercolor-style or flat-vector illustrations of farm landscapes, barns, watering cans, and sprouting plants.
 
-## 5. Motion & Interaction (The "Comfort" Factor)
+  3.2 Build System
+   * Bundler: Metro Bundler configured to support NativeWind.
 
-- **Bounciness:** Interactions should feel responsive but gentle. Use spring animations (via `react-native-reanimated`) for button presses, modal appearances, and pet reactions. It shouldn't snap aggressively; it should settle smoothly.
-- **Micro-interactions:** 
-  - Checking off a task should trigger a small burst of golden particles or a soft scaling animation.
-  - The pet should always have a subtle idle animation (breathing, blinking, swaying slightly) so the app feels "alive" even when the user is just reading stats.
+  4. Asset Management
 
-## 6. Tone of Voice
 
-- **Farmagotchi Chat & Prompts:** The language should be encouraging, folksy, and supportive. 
-  - *Instead of:* "Error: Soil moisture below 20%. Action required."
-  - *Use:* "Looks like the soil is getting a bit dry out there! Let's get some water on those crops soon to keep them happy."
-- **Feedback:** Celebrate small wins. Completing all daily tasks should feel like a genuine achievement, praised by the pet.
+  4.1 Storage & Usage
+   * Location: All static assets (images, fonts, vector files)
+     are stored in the /assets/ directory.
+   * Images: For rendering images, prefer expo-image over the
+     standard React Native Image component when performance
+     and caching are a priority.
+   * Fonts: The custom font GeistPixel-Square.ttf is located
+     in /assets/ and pre-loaded in app/_layout.tsx using
+     expo-splash-screen to prevent hiding the splash screen
+     until assets are ready.
+
+  5. Icon System
+
+
+  5.1 Icon Libraries
+  The project utilizes a hybrid approach to icons:
+   1. Vector Icons: @expo/vector-icons is the primary icon
+      library (e.g., MaterialCommunityIcons and Ionicons).
+      This should be your first stop when implementing
+      standard UI icons from a design.
+   2. Custom SVGs: Custom SVG icons (like Lucide icons or
+      brand-specific assets) are stored in /assets/lucide/
+      (e.g., camera.svg, sprout.svg).
+   3. Rendering SVGs: react-native-svg is installed for
+      rendering these custom SVG assets natively.
+
+  Example Usage (Vector Icons):
+
+
+   1 import { MaterialCommunityIcons } from
+     '@expo/vector-icons';
+   2
+   3 // Rendered inside a NativeWind styled view
+   4 <View className="h-12 w-12 items-center justify-center
+     rounded-full bg-primary-100">
+   5   <MaterialCommunityIcons name="sprout-outline" size={26}
+     color="#1d1b20" />
+   6 </View>
+
+  6. Styling Approach
+
+
+  6.1 CSS Methodology
+   * NativeWind (Tailwind CSS): The primary styling
+     methodology is Utility-First CSS using the className
+     prop.
+   * Global Styles: Base Tailwind directives are injected via
+     /global.css which is imported at the root in
+     app/_layout.tsx.
+   * Responsive Design: Given the mobile focus, responsive
+     design primarily relies on flexbox (flex, flex-row,
+     justify-between) and relative sizing rather than media
+     query breakpoints.
+   * Safe Areas: Always use useSafeAreaInsets from
+     react-native-safe-area-context to handle notches and home
+     indicators, rather than hardcoding paddings.
+
+  Example Styling Pattern:
+
+
+    1 import { View, Text } from 'react-native';
+    2
+    3 export default function Card({ title }: { title: string
+      }) {
+    4   return (
+    5     // Utility classes mapping to tokens
+    6     <View className="rounded-xl bg-neutral-100 p-4
+      shadow-sm">
+    7       <Text className="font-geist text-lg
+      text-neutral-900">{title}</Text>
+    8     </View>
+    9   );
+   10 }
+
+
+  7. Project Structure
+
+  The codebase follows the standard Expo Router project
+  structure:
+
+
+   * /app/: Contains the file-based routing logic.
+       * /app/_layout.tsx: The root layout, responsible for
+         global providers (SafeAreaProvider, fonts, splash
+         screen).
+       * /app/(tabs)/: Contains the main tab-based navigation
+         views (index.tsx, plots.tsx, tasks.tsx, finance.tsx,
+         etc.).
+   * /assets/: Images, SVGs, and fonts.
+   * /components/: Shared, reusable UI components.
+   * /src/lib/: Core utilities and constants (e.g.,
+     colors.ts).
+   * /plans/: Contains markdown documentation detailing the
+     product specs and feature plans.
+
+  ---
+
+
+  🎨 MCP Figma Implementation Workflow
+
+  When asked to implement a Figma design using MCP, follow
+  this workflow:
+
+
+   1. Token Mapping: Extract hex codes from the Figma node and
+      map them to the existing tokens in tailwind.config.js or
+      src/lib/colors.ts. Do not introduce hardcoded hex colors
+      (#FFFFFF) if a suitable token exists (e.g.,
+      bg-neutral-100).
+   2. Typography Validation: Check if the text layers in Figma
+      map to the font-geist family or standard system fonts,
+      and apply the correct Tailwind text utilities.
+   3. Icon Strategy: Check if the icon exists in
+      @expo/vector-icons first. If it's a completely custom
+      SVG, export it from Figma, place it in /assets/lucide/,
+      and implement it using react-native-svg.
+   4. Layout Construction: Use flexbox via NativeWind
+      className strings to match the Auto Layout
+      configurations from Figma. Ensure padding accounts for
+      useSafeAreaInsets where applicable.
