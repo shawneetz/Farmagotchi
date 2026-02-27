@@ -55,7 +55,7 @@ export default function MainDashboardMockup() {
         showsVerticalScrollIndicator={false}>
         <View className="px-4">
           {/* Header Section */}
-          <View className="mb-4 mt-16 flex-row items-center justify-between">
+          <View className="mb-4 mt-2 flex-row items-center justify-between">
             <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-[#f1f1ee]">
               <Ionicons name="person-circle-outline" size={26} color="#4B3F35" />
             </Pressable>
@@ -64,7 +64,7 @@ export default function MainDashboardMockup() {
               <Text
                 className="text-lg font-bold text-rich-soil-brown"
                 style={{ fontFamily: 'GeistPixel' }}>
-                Mango tree
+                Tomato Patch
               </Text>
               <Ionicons name="chevron-down" size={16} color="#4B3F35" />
             </Pressable>
@@ -95,9 +95,9 @@ export default function MainDashboardMockup() {
           </View>
 
           {/* Central Plant Area */}
-          <View className="relative h-[300px] items-center justify-center">
+          <View className="relative mt-16 h-[300px] items-center justify-center">
             <Animated.View style={[petStyle, { alignItems: 'center' }]}>
-              <View className="z-10 h-[280px] w-[200px] overflow-visible">
+              <View className="z-10 h-[340px] w-[200px] overflow-visible">
                 <Image
                   source={require('../assets/tree.png')}
                   style={{ width: '100%', height: '100%' }}
@@ -112,12 +112,15 @@ export default function MainDashboardMockup() {
                 />
               </View>
             </Animated.View>
+            <View className="absolute bottom-0 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
+              <Text className="text-base font-medium text-white">Mango tree</Text>
+            </View>
           </View>
         </View>
 
         {/* Bottom Container */}
         <View
-          className="mt-12 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
+          className="mt-24 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
           style={styles.shadow}>
           {/* Widgets Container */}
           <View className="gap-4">
