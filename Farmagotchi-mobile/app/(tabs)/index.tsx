@@ -14,7 +14,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { verifyInstallation } from 'nativewind';
-import { useTaskStore, useFinanceStore } from '../../lib/stores';
+import { useTaskStore, useFinanceStore, useInsightsModal } from '../../lib/stores';
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
@@ -23,6 +23,7 @@ export default function DashboardScreen() {
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
+  const { open: openInsights, showTooltip, dismissTooltip } = useInsightsModal();
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -65,6 +66,25 @@ export default function DashboardScreen() {
     };
   });
 
+  const tooltipTranslateY = useSharedValue(0);
+
+  useEffect(() => {
+    tooltipTranslateY.value = withRepeat(
+      withSequence(
+        withTiming(-4, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      true
+    );
+  }, [tooltipTranslateY]);
+
+  const tooltipStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: tooltipTranslateY.value }],
+    };
+  });
+
   return (
     <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
       <ScrollView
@@ -92,7 +112,60 @@ export default function DashboardScreen() {
           </View>
 
           {/* Central Plant Area */}
-          <View className="relative mt-16 h-[300px] items-center justify-center">
+          <Pressable
+            onPress={() => {
+              openInsights();
+              dismissTooltip();
+            }}
+            className="relative mt-16 h-[300px] items-center justify-center active:opacity-90">
+            {/* Tooltip */}
+            {showTooltip && (
+              <Animated.View
+                style={[
+                  tooltipStyle,
+                  {
+                    position: 'absolute',
+                    top: -20,
+                    zIndex: 20,
+                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: 'rgba(113, 172, 23, 0.3)',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 2,
+                    elevation: 2,
+                  },
+                ]}>
+                <View className="flex-row items-center gap-1.5">
+                  <MaterialCommunityIcons name="lightbulb-on-outline" size={13} color="#71ac17" />
+                  <Text className="font-geist text-[10px] font-medium text-[#575647]">
+                    Tap for insights
+                  </Text>
+                </View>
+                {/* Tooltip Arrow */}
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: -5,
+                    left: '50%',
+                    marginLeft: -5,
+                    width: 0,
+                    height: 0,
+                    borderLeftWidth: 5,
+                    borderRightWidth: 5,
+                    borderTopWidth: 5,
+                    borderLeftColor: 'transparent',
+                    borderRightColor: 'transparent',
+                    borderTopColor: 'rgba(255, 255, 255, 0.85)',
+                  }}
+                />
+              </Animated.View>
+            )}
+
             <Animated.View style={[petStyle, { alignItems: 'center' }]}>
               <View className="z-10 h-[340px] w-[200px] overflow-visible">
                 <Image
@@ -112,7 +185,7 @@ export default function DashboardScreen() {
             <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
               <Text className="font-geist text-base font-medium text-white">Mango tree</Text>
             </View>
-          </View>
+          </Pressable>
         </View>
 
         {/* Bottom Container */}

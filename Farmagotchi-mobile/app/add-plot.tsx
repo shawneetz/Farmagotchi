@@ -268,11 +268,11 @@ export default function AddPlotScreen() {
 
         {/* Footer Actions */}
         <View className="mt-8 flex-row justify-end ">
-          { /* slooooopp */}
+          {/* slooooopp */}
           <Pressable
             onPress={handleNext}
             style={{ opacity: step === 1 && !formData.name ? 0.5 : 1 }}
-            className='rounded-full overflow-hidden'
+            className="overflow-hidden rounded-full"
             disabled={step === 1 && !formData.name}>
             <LinearGradient
               colors={['#71ac17', '#8eda1e']}

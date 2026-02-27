@@ -1,6 +1,7 @@
 import { Slot } from 'expo-router';
 import { MenuBar } from 'components/MenuBar';
 import { Modal } from 'components/Modal';
+import InsightsModal from 'components/InsightsModal';
 
 export default function TabLayout() {
   return (
@@ -9,6 +10,7 @@ export default function TabLayout() {
       <Slot />
       <MenuBar />
       <Modal />
+      <InsightsModal />
     </>
   );
 }

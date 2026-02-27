@@ -61,3 +61,4 @@ The project uses the Expo CLI for development.
 
 - **2026-02-27:** Implemented the Finance screen (`app/(tabs)/finance.tsx`) with 1:1 visual parity to Figma design. Switched the income arc to use `assets/chart.svg` via `expo-image` and updated all screen text to use the `GeistPixel` font family.
 - **2026-02-28:** Added a "mark all tasks as incomplete" button to the Tasks screen (`app/(tabs)/tasks.tsx`) and implemented the `resetAllTasks` action in `useTaskStore` (`lib/stores.ts`).
+- **2026-02-28:** Implemented a pull-up "Insights Modal" triggered by pressing the central plant on the dashboard. Added `useInsightsModal` store, `components/InsightsModal.tsx` with AI-style status summaries, and integrated it into the global tab layout. Added an animated "Tap for insights" tooltip to the dashboard to signal interactivity.

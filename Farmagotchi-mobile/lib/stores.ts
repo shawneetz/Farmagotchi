@@ -2,17 +2,29 @@ import { create } from 'zustand';
 
 type ModalState = {
   visible: boolean;
+  showTooltip: boolean;
 };
 
 type ModalAction = {
   open: () => void;
   close: () => void;
+  dismissTooltip: () => void;
 };
 
 export const useModal = create<ModalState & ModalAction>((set) => ({
   visible: false,
+  showTooltip: true,
   open: () => set(() => ({ visible: true })),
   close: () => set(() => ({ visible: false })),
+  dismissTooltip: () => set(() => ({ showTooltip: false })),
+}));
+
+export const useInsightsModal = create<ModalState & ModalAction>((set) => ({
+  visible: false,
+  showTooltip: true,
+  open: () => set(() => ({ visible: true })),
+  close: () => set(() => ({ visible: false })),
+  dismissTooltip: () => set(() => ({ showTooltip: false })),
 }));
 
 export type TransactionType = 'income' | 'expense';
