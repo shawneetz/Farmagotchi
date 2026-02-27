@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { View, Platform } from 'react-native';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
@@ -10,28 +10,38 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: Platform.OS === 'ios' ? 24 : 16,
-          left: 16,
-          right: 16,
+          bottom: Platform.OS === 'ios' ? 40 : 24,
+          marginHorizontal: 30,
           backgroundColor: '#ffffff',
           borderRadius: 33,
           height: 66,
           borderTopWidth: 0,
-          elevation: 5,
+          elevation: 10,
           shadowColor: '#d3d3ca',
-          shadowOffset: { width: 0, height: 3 },
+          shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 1,
-          shadowRadius: 14.9,
+          shadowRadius: 15,
+          paddingHorizontal: 12,
+
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around',
         },
       }}>
-      
       <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ focused }) => (
-            <View className={`p-3 rounded-full ${focused ? 'bg-[#e1f6c0]' : 'bg-transparent'}`}>
-              <Feather name="home" size={24} color="#1d1b20" />
+            <View
+              className="items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: focused ? '#e1f6c0' : 'transparent',
+              }}>
+              <MaterialCommunityIcons name="home-outline" size={26} color="#1d1b20" />
             </View>
           ),
         }}
@@ -41,8 +51,15 @@ export default function TabLayout() {
         options={{
           title: 'Plots',
           tabBarIcon: ({ focused }) => (
-            <View className={`p-3 rounded-full ${focused ? 'bg-[#e1f6c0]' : 'bg-transparent'}`}>
-              <MaterialCommunityIcons name="sprout" size={24} color="#1d1b20" />
+            <View
+              className="items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: focused ? '#e1f6c0' : 'transparent',
+              }}>
+              <MaterialCommunityIcons name="sprout-outline" size={26} color="#1d1b20" />
             </View>
           ),
         }}
@@ -51,9 +68,17 @@ export default function TabLayout() {
         name="tasks"
         options={{
           title: 'Tasks',
-          tabBarIcon: ({ focused }) => (
-            <View className="bg-[#a3e540] rounded-[30px] shadow-sm items-center justify-center" style={{ marginTop: -20, width: 60, height: 60 }}>
-              <Feather name="plus" size={30} color="#1d1b20" />
+          tabBarIcon: () => (
+            <View
+              className="items-center justify-center"
+              style={{
+                width: 58,
+                height: 58,
+                borderRadius: 29,
+                backgroundColor: '#a3e540',
+                marginBottom: 4, // Aligns better visually within the 66px bar
+              }}>
+              <MaterialCommunityIcons name="plus" size={32} color="#1d1b20" />
             </View>
           ),
         }}
@@ -63,8 +88,15 @@ export default function TabLayout() {
         options={{
           title: 'Finance',
           tabBarIcon: ({ focused }) => (
-            <View className={`p-3 rounded-full ${focused ? 'bg-[#e1f6c0]' : 'bg-transparent'}`}>
-              <MaterialCommunityIcons name="currency-usd" size={24} color="#1d1b20" />
+            <View
+              className="items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: focused ? '#e1f6c0' : 'transparent',
+              }}>
+              <MaterialCommunityIcons name="currency-php" size={26} color="#1d1b20" />
             </View>
           ),
         }}
@@ -74,8 +106,15 @@ export default function TabLayout() {
         options={{
           title: 'Scan',
           tabBarIcon: ({ focused }) => (
-            <View className={`p-3 rounded-full ${focused ? 'bg-[#e1f6c0]' : 'bg-transparent'}`}>
-              <Feather name="camera" size={24} color="#1d1b20" />
+            <View
+              className="items-center justify-center"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: focused ? '#e1f6c0' : 'transparent',
+              }}>
+              <MaterialCommunityIcons name="camera-outline" size={26} color="#1d1b20" />
             </View>
           ),
         }}
@@ -83,7 +122,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          href: null, // Hide chat from the floating tab bar
+          href: null,
         }}
       />
     </Tabs>

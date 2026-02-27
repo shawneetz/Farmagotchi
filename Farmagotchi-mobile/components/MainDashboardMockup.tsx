@@ -5,9 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Using a reliable fallback for the tree image since the Figma API URL might expire or be inaccessible
-const imgPolygonPlants2 = "../assets/tree.png";
-
 export default function MainDashboardMockup() {
   const insets = useSafeAreaInsets();
 
@@ -52,7 +49,7 @@ export default function MainDashboardMockup() {
         </View>
 
         {/* Bottom Container */}
-        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-8 px-4 py-6 shadow-md shadow-offset-h-10" style={styles.shadow}>
+        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-24 px-4 py-6 shadow-xl shadow-offset-h-10" style={styles.shadow}>
           
           {/* Tasks Widget */}
           <View className="w-full relative rounded-[19px] overflow-hidden mb-4">
@@ -131,7 +128,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 1,
-    shadowRadius: 8.6,
-    elevation: 10,
+    shadowRadius: 88.8,
+    elevation: 8,
   }
 });
