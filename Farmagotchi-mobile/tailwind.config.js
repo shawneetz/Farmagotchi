@@ -1,10 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./App.{js,ts,tsx}', './components/**/*.{js,ts,tsx}'],
+  content: ['./App.{js,ts,tsx}', './app/**/*.{js,ts,tsx}', './components/**/*.{js,ts,tsx}'],
 
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
+      fontFamily: {
+        geist: ['GeistPixel'],
+      },
       colors: {
         'earthy-green': '#4A7C59',
         'sunlit-gold': '#F4D35E',
