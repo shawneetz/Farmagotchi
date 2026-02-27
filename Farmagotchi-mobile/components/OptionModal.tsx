@@ -36,7 +36,7 @@ export default function OptionModal({
   onClose: () => void;
 }) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View className="absolute inset-0">
         <Pressable className="absolute inset-0 bg-neutral-900/20" onPress={onClose} />
 

@@ -1,4 +1,5 @@
 import { colors } from 'lib/colors';
+import { useModal } from 'lib/stores';
 import { AnimatedPressable } from 'lib/utils';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -6,6 +7,7 @@ import Svg, { Path } from 'react-native-svg';
 
 export const PlusButton = () => {
   const [pressed, setPressed] = useState(false);
+  const openModal = useModal(state => state.open);
   return (
     <AnimatedPressable
       style={[
@@ -17,7 +19,7 @@ export const PlusButton = () => {
         styles.addButton,
       ]}
       onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
+      onPressOut={() => {setPressed(false); openModal()}}
       >
       <Svg width="32" height="32" viewBox="0 0 31 31" fill="none">
         <Path
