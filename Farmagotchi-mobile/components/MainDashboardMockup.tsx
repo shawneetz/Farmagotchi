@@ -1,209 +1,122 @@
-import React, { useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, ImageBackground } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  withSequence,
-  Easing,
-} from 'react-native-reanimated';
+import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+
+// Using a reliable fallback for the tree image since the Figma API URL might expire or be inaccessible
+const imgPolygonPlants2 = "../assets/tree.png";
 
 export default function MainDashboardMockup() {
   const insets = useSafeAreaInsets();
 
-  // Simple idle animation for the pet
-  const translateY = useSharedValue(0);
-  const scaleY = useSharedValue(1);
-
-  useEffect(() => {
-    translateY.value = withRepeat(
-      withSequence(
-        withTiming(-5, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1,
-      true
-    );
-    scaleY.value = withRepeat(
-      withSequence(
-        withTiming(0.98, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1,
-      true
-    );
-  }, []);
-
-  const petStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }, { scaleY: scaleY.value }],
-    };
-  });
-
   return (
-    <View
-      className="flex-1 bg-morning-mist"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
+    <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ padding: 16, gap: 24 }}
-        className="flex-1">
-        {/* Header Section */}
-        <View className="flex-row items-center justify-between">
-          <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-soft-clay">
-            <Ionicons name="person-circle-outline" size={26} color="#4B3F35" />
-          </Pressable>
-
-          <Pressable className="flex-row items-center gap-2 rounded-full bg-soft-clay px-4 py-2">
-            <Text className="text-lg font-bold text-rich-soil-brown">Tomato Patch</Text>
-            <Ionicons name="chevron-down" size={16} color="#4B3F35" />
-          </Pressable>
-
-          <Pressable className="relative h-10 w-10 items-center justify-center rounded-full bg-soft-clay">
-            <Ionicons name="notifications" size={22} color="#4B3F35" />
-            <View className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border border-soft-clay bg-sunlit-gold" />
-          </Pressable>
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}>
+        
+        {/* Plant Progress Bar */}
+        <View className="flex-row items-center justify-center gap-2 mt-12 mx-auto w-[200px]">
+          <MaterialCommunityIcons name="seed" size={18} color="#71ac17" />
+          <View className="flex-1 h-3 rounded-full bg-[#d3d3ca] relative overflow-hidden">
+            <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '70.68%' }}>
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <LinearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <Stop offset="0%" stopColor="#a3e540" />
+                    <Stop offset="100%" stopColor="#e1f6c0" />
+                  </LinearGradient>
+                </Defs>
+                <Rect width="100%" height="100%" fill="url(#grad1)" />
+              </Svg>
+            </View>
+          </View>
+          <MaterialCommunityIcons name="food-apple" size={18} color="#b6ea67" />
         </View>
 
-        {/* Pet Interaction Area with Plot Photo Background */}
-        <View className="overflow-hidden rounded-[40px]" style={styles.softShadow}>
-          <ImageBackground
-            source={{
-              uri: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=1000',
-            }}
-            className="items-center justify-center py-6"
-            resizeMode="cover">
-            {/* Subtle Overlay to ensure readability */}
-            <View className="absolute inset-0 bg-black/5" />
-
-            {/* Daily Insight Bubble */}
-            <View className="mb-2 max-w-[80%] rounded-2xl bg-white p-3" style={styles.softShadow}>
-              <Text className="text-center text-xs font-medium text-rich-soil-brown">
-                "Gonna be hot today! Don't forget to water the tomatoes to keep 'em happy."
-              </Text>
-              {/* Simple tail for the bubble */}
-              <View className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1.5 rotate-45 bg-white" />
-            </View>
-
-            {/* Pet Avatar Stage */}
-            <Animated.View style={petStyle} className="my-4 items-center justify-center">
-              <View
-                className="h-32 w-32 items-center justify-center rounded-full border-4 border-earthy-green bg-morning-mist/90"
-                style={styles.softShadow}>
-                {/* Placeholder for actual 2D Vector Illustration */}
-                <Text className="text-5xl">😸</Text>
-              </View>
-            </Animated.View>
-
-            {/* Happiness Bar Container (translucent background for readability) */}
-            <View className="w-full max-w-[180px] gap-1.5 rounded-full bg-white/90 px-3 py-2 backdrop-blur-md">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-[10px] font-bold text-rich-soil-hite">Happiness</Text>
-                <Text className="text-[10px] font-bold text-rich-soil-brown">85%</Text>
-              </View>
-              <View className="h-2 w-full overflow-hidden rounded-full bg-soft-clay/60">
-                <View className="h-full w-[85%] rounded-full bg-sunlit-gold" />
-              </View>
-            </View>
-          </ImageBackground>
+        {/* Central Plant Area */}
+        <View className="items-center relative mt-6 h-[340px]">
+          <View className="w-[180px] h-[320px] rounded-2xl overflow-visible justify-center items-center ">
+            <Image 
+              source={require('../assets/tree.png')} 
+              style={{ width: '100%', height: '100%' }} 
+              contentFit="contain" 
+            />
+          </View>
+          <View className="absolute bottom-4 bg-[rgba(40,41,47,0.8)] border border-black/20 px-4 py-1.5 rounded-lg shadow-sm">
+            <Text className="text-white text-base font-medium">Mango tree</Text>
+          </View>
         </View>
 
-        {/* Quick Widgets */}
-        <View className="gap-4">
-          <Text className="px-1 text-lg font-bold text-rich-soil-brown">Overview</Text>
-
-          <View className="flex-row gap-4">
-            {/* Task Summary Widget */}
-            <Pressable className="flex-1 rounded-3xl bg-soft-clay p-4" style={styles.softShadow}>
-              <View className="mb-2 flex-row items-center gap-2">
-                <Ionicons name="checkmark-circle" size={20} color="#4A7C59" />
-                <Text className="font-bold text-rich-soil-brown">Tasks</Text>
+        {/* Bottom Container */}
+        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-8 px-4 py-6 shadow-md shadow-offset-h-10" style={styles.shadow}>
+          
+          {/* Tasks Widget */}
+          <View className="w-full relative rounded-[19px] overflow-hidden mb-4">
+            <View className="absolute inset-0">
+              <Svg width="100%" height="100%">
+                <Defs>
+                  <LinearGradient id="gradTasks" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <Stop offset="0%" stopColor="#8eda1e" />
+                    <Stop offset="100%" stopColor="#c6ef89" />
+                  </LinearGradient>
+                </Defs>
+                <Rect width="100%" height="100%" fill="url(#gradTasks)" />
+              </Svg>
+            </View>
+            <View className="p-4 relative min-h-[120px] justify-center">
+              <Feather 
+                name="check-circle" 
+                size={140} 
+                color="#000000" 
+                style={{ position: 'absolute', right: -20, top: -20, opacity: 0.1 }} 
+              />
+              <Text className="text-[#454b31] text-sm mb-1 font-medium">Tasks</Text>
+              <View className="flex-row items-baseline gap-1 mb-3">
+                <Text className="text-3xl text-[#49561f]">2</Text>
+                <Text className="text-base text-[#698312]">/4</Text>
+                <Text className="text-xs text-[#49561f] ml-1">Completed Today</Text>
               </View>
-              <Text
-                className="text-2xl font-bold text-rich-soil-brown"
-                style={{ fontVariant: ['tabular-nums'] }}>
-                2/4
-              </Text>
-              <Text className="text-xs text-rich-soil-brown/70">Completed Today</Text>
-            </Pressable>
-
-            {/* Health/Scan Widget */}
-            <Pressable className="flex-1 rounded-3xl bg-soft-clay p-4" style={styles.softShadow}>
-              <View className="mb-2 flex-row items-center gap-2">
-                <MaterialCommunityIcons name="leaf" size={20} color="#7FB3D5" />
-                <Text className="font-bold text-rich-soil-brown">Health</Text>
+              <View className="h-2 w-full rounded-full bg-[#f1f1ee] overflow-hidden">
+                <View style={{ width: '50%', height: '100%' }}>
+                  <Svg width="100%" height="100%">
+                    <Defs>
+                      <LinearGradient id="gradTaskProg" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <Stop offset="0%" stopColor="#71ac17" />
+                        <Stop offset="100%" stopColor="#b6ea67" />
+                      </LinearGradient>
+                    </Defs>
+                    <Rect width="100%" height="100%" fill="url(#gradTaskProg)" />
+                  </Svg>
+                </View>
               </View>
-              <Text
-                className="text-2xl font-bold text-rich-soil-brown"
-                style={{ fontVariant: ['tabular-nums'] }}>
-                85%
-              </Text>
-              <Text className="flex-row items-center text-xs text-earthy-green">
-                ↑ <Text className="text-xs text-earthy-green">Looking good</Text>
-              </Text>
-            </Pressable>
+            </View>
           </View>
 
-          {/* Finance Widget */}
-          <Pressable
-            className="flex-row items-center justify-between rounded-3xl bg-soft-clay p-4"
-            style={styles.softShadow}>
-            <View className="gap-1">
-              <View className="flex-row items-center gap-2">
-                <MaterialCommunityIcons name="currency-usd-circle" size={20} color="#F4D35E" />
-                <Text className="font-bold text-rich-soil-brown">Net Profit (Week)</Text>
+          {/* Row for Net Profit and Weather */}
+          <View className="flex-row gap-4 h-[95px]">
+            {/* Net Profit Widget */}
+            <View className="flex-[1_0_0] rounded-[19px] border border-[#e0e1e6] bg-[#f9fafa] p-4 justify-center">
+              <View className="flex-row items-center gap-1.5 mb-2">
+                <MaterialCommunityIcons name="cash-fast" size={16} color="#454b31" />
+                <Text className="text-[#454b31] text-[13px] font-medium" numberOfLines={1}>Net Profit (Week)</Text>
               </View>
-              <Text className="text-xs text-rich-soil-brown/70">
-                Estimated from expenses vs market
-              </Text>
+              <View className="flex-row items-center gap-1">
+                <Feather name="arrow-up" size={20} color="#454b32" />
+                <Text className="text-[22px] text-[#454b32] font-bold">₱120</Text>
+              </View>
             </View>
-            <Text
-              className="text-2xl font-bold text-earthy-green"
-              style={{ fontVariant: ['tabular-nums'] }}>
-              +$120
-            </Text>
-          </Pressable>
 
-          {/* Daily Insights Widget */}
-          <View className="gap-3">
-            <Text className="px-1 text-lg font-bold text-rich-soil-brown">Daily Insights</Text>
-            
-            <View className="rounded-3xl bg-soft-clay p-4" style={styles.softShadow}>
-              <View className="mb-4 flex-row items-center justify-between">
-                <View className="flex-row items-center gap-3">
-                  <Ionicons name="sunny" size={28} color="#F4D35E" />
-                  <View>
-                    <Text className="text-lg font-bold text-rich-soil-brown">28°C</Text>
-                    <Text className="text-xs text-rich-soil-brown/70">Mostly Sunny</Text>
-                  </View>
-                </View>
-                <View className="items-end">
-                  <Text className="text-xs font-bold text-rich-soil-brown">Humidity: 45%</Text>
-                  <Text className="text-xs text-rich-soil-brown/70">Precipitation: 5%</Text>
-                </View>
-              </View>
-
-              <View className="h-[1px] w-full bg-rich-soil-brown/10 mb-4" />
-
-              <View className="gap-3">
-                <View className="flex-row items-start gap-3">
-                  <View className="mt-1 h-2 w-2 rounded-full bg-earthy-green" />
-                  <View className="flex-1">
-                    <Text className="text-sm font-bold text-rich-soil-brown">Weekly Trend</Text>
-                    <Text className="text-xs text-rich-soil-brown/70">Growth rate is 12% higher than last week. Great job!</Text>
-                  </View>
-                </View>
-                
-                <View className="flex-row items-start gap-3">
-                  <View className="mt-1 h-2 w-2 rounded-full bg-sunlit-gold" />
-                  <View className="flex-1">
-                    <Text className="text-sm font-bold text-rich-soil-brown">Daily Tip</Text>
-                    <Text className="text-xs text-rich-soil-brown/70">Mulching today will help retain moisture during the afternoon heat.</Text>
-                  </View>
-                </View>
+            {/* Weather Widget */}
+            <View className="flex-[1_0_0] rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4 flex-row items-center gap-3">
+              <Feather name="cloud" size={40} color="#71ac17" />
+              <View className="flex-shrink">
+                <Text className="text-[#7c7a65] text-xs font-medium">Los Baños</Text>
+                <Text className="text-[#575647] text-base font-bold">24°C/30°C</Text>
+                <Text className="text-[#9d9c88] text-[10px]">55% Humidity</Text>
               </View>
             </View>
           </View>
@@ -214,8 +127,11 @@ export default function MainDashboardMockup() {
 }
 
 const styles = StyleSheet.create({
-  softShadow: {
-    // A soft, diffused, warm drop-shadow rather than harsh dark gray
-    boxShadow: '0 4px 12px rgba(75, 63, 53, 0.08)',
-  } as any,
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 1,
+    shadowRadius: 8.6,
+    elevation: 10,
+  }
 });
