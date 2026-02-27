@@ -1,8 +1,10 @@
 import { Tabs } from 'expo-router';
 import { View, Platform } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
+  const {bottom} = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -27,7 +29,8 @@ export default function TabLayout() {
           alignItems: 'center',
           justifyContent: 'space-around',
         },
-      }}>
+      }}
+      >
       <Tabs.Screen
         name="index"
         options={{
