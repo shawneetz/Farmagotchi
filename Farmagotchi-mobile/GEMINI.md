@@ -61,5 +61,6 @@ The project uses the Expo CLI for development.
 
 - **2026-02-27:** Implemented the Finance screen (`app/(tabs)/finance.tsx`) with 1:1 visual parity to Figma design. Switched the income arc to use `assets/chart.svg` via `expo-image` and updated all screen text to use the `GeistPixel` font family.
 - **2026-02-28:** Added a "mark all tasks as incomplete" button to the Tasks screen (`app/(tabs)/tasks.tsx`) and implemented the `resetAllTasks` action in `useTaskStore` (`lib/stores.ts`).
+- **2026-02-28:** Implemented `useWeatherStore` in `lib/stores.ts` to manage weather data. Updated the weather widget in `app/(tabs)/index.tsx` and AI insights in `components/InsightsModal.tsx` to load data from the store in preparation for API integration.
 - **2026-02-28:** Implemented the AIChat feature (`app/chat.tsx`) with persistent message history via `useChatStore`, a reset functionality, and context-aware stubbed AI responses. Linked the "Chat with your crop" button in `InsightsModal.tsx` to the new chat screen.
 - **2026-02-28:** Implemented a pull-up "Insights Modal" triggered by pressing the central plant on the dashboard. Added `useInsightsModal` store, `components/InsightsModal.tsx` with AI-style status summaries, and integrated it into the global tab layout. Added an animated "Tap for insights" tooltip to the dashboard to signal interactivity.

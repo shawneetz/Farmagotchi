@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { Modal, View, Text, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { useTaskStore, useFinanceStore, useInsightsModal } from '../lib/stores';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useTaskStore, useFinanceStore, useInsightsModal, useWeatherStore } from '../lib/stores';
 
 export default function InsightsModal() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function InsightsModal() {
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
+  const weather = useWeatherStore();
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -40,11 +42,27 @@ export default function InsightsModal() {
       insights.push('Expenses are exceeding income. Review your resource spending.');
     }
 
+    // Weather Insight
+    if (weather.condition.includes('rain')) {
+      insights.push(`It's raining in ${weather.location}. Natural hydration for me!`);
+    } else if (weather.highTemp > 32) {
+      insights.push(`It's getting hot today (${weather.highTemp}°C). Keep an eye on my soil.`);
+    } else {
+      insights.push(`The weather in ${weather.location} is great for my growth.`);
+    }
+
     // General Health Stub
     insights.push('Soil moisture levels are within optimal range for Mangoes.');
 
     return insights;
-  }, [completedDailyTasks, totalDailyTasks, netProfit]);
+  }, [
+    completedDailyTasks,
+    totalDailyTasks,
+    netProfit,
+    weather.condition,
+    weather.highTemp,
+    weather.location,
+  ]);
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
@@ -125,13 +143,19 @@ export default function InsightsModal() {
 
           {/* Action Button */}
           <Pressable
-            className="w-full flex-row items-center justify-center gap-2 rounded-2xl bg-[#71ac17] py-4 shadow-sm"
+            className="w-full overflow-hidden rounded-2xl shadow-sm"
             onPress={() => {
               close();
               router.push('/chat');
             }}>
-            <MaterialCommunityIcons name="chat-processing-outline" size={22} color="white" />
-            <Text className="font-geist text-base font-bold text-white">Chat with your crop</Text>
+            <LinearGradient
+              colors={['#71ac17', '#8eda1e']}
+              start={{ x: 1, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              className="flex-row items-center justify-center gap-2 py-4">
+              <MaterialCommunityIcons name="chat-processing-outline" size={22} color="white" />
+              <Text className="font-geist text-base font-bold text-white">Chat with your crop</Text>
+            </LinearGradient>
           </Pressable>
         </View>
       </View>

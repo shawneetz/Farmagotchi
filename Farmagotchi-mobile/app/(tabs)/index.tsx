@@ -14,7 +14,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { verifyInstallation } from 'nativewind';
-import { useTaskStore, useFinanceStore, useInsightsModal } from '../../lib/stores';
+import { useTaskStore, useFinanceStore, useInsightsModal, useWeatherStore } from '../../lib/stores';
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
@@ -24,6 +24,7 @@ export default function DashboardScreen() {
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
   const { open: openInsights, showTooltip, dismissTooltip } = useInsightsModal();
+  const weather = useWeatherStore();
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -267,12 +268,14 @@ export default function DashboardScreen() {
 
               {/* Weather Widget */}
               <View className="flex-1 flex-row items-center gap-3 rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4">
-                <Feather name="cloud" size={32} color="#71ac17" />
+                <Feather name={weather.condition} size={32} color="#71ac17" />
                 <View className="flex-shrink">
                   <Text className="font-geist text-[10px] font-medium text-[#7c7a65]">
-                    Los Baños
+                    {weather.location}
                   </Text>
-                  <Text className="font-geist text-sm font-bold text-[#575647]">24°C/30°C</Text>
+                  <Text className="font-geist text-sm font-bold text-[#575647]">
+                    {weather.lowTemp}°C/{weather.highTemp}°C
+                  </Text>
                 </View>
               </View>
             </View>

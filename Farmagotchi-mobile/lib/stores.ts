@@ -210,3 +210,33 @@ export const useChatStore = create<ChatState & ChatAction>((set) => ({
     })),
   resetChat: () => set({ messages: initialMessages }),
 }));
+
+export type WeatherCondition =
+  | 'cloud'
+  | 'sun'
+  | 'cloud-rain'
+  | 'cloud-lightning'
+  | 'cloud-snow'
+  | 'wind'
+  | 'cloud-drizzle';
+
+type WeatherState = {
+  location: string;
+  currentTemp: number;
+  highTemp: number;
+  lowTemp: number;
+  condition: WeatherCondition;
+};
+
+type WeatherAction = {
+  updateWeather: (weather: Partial<WeatherState>) => void;
+};
+
+export const useWeatherStore = create<WeatherState & WeatherAction>((set) => ({
+  location: 'Los Baños',
+  currentTemp: 27,
+  highTemp: 30,
+  lowTemp: 24,
+  condition: 'cloud',
+  updateWeather: (weather) => set((state) => ({ ...state, ...weather })),
+}));
