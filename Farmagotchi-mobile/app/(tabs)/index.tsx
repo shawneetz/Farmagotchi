@@ -14,7 +14,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { verifyInstallation } from 'nativewind';
-import { useTaskStore } from '../../lib/stores';
+import { useTaskStore, useFinanceStore } from '../../lib/stores';
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
@@ -22,10 +22,15 @@ export default function DashboardScreen() {
   verifyInstallation();
 
   const tasks = useTaskStore((state) => state.tasks);
+  const transactions = useFinanceStore((state) => state.transactions);
+  
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
   const totalDailyTasks = dailyTasks.length;
   const progressPercentage = totalDailyTasks > 0 ? (completedDailyTasks / totalDailyTasks) * 100 : 0;
+
+  const netProfit = transactions.reduce((acc, curr) => curr.type === 'income' ? acc + curr.cost : acc - curr.cost, 0);
+  const isProfitPositive = netProfit >= 0;
 
   // Simple idle animation for the pet
   const translateY = useSharedValue(0);
@@ -161,12 +166,14 @@ export default function DashboardScreen() {
                   <Text
                     className="font-geist text-[13px] font-medium text-[#454b31]"
                     numberOfLines={1}>
-                    Net Profit (Week)
+                    Net Profit 
                   </Text>
                 </View>
                 <View className="flex-row items-center gap-1">
-                  <Feather name="arrow-up" size={18} color="#454b32" />
-                  <Text className="font-geist text-[20px] font-bold text-[#454b32]">₱120</Text>
+                  <Feather name={isProfitPositive ? "arrow-up" : "arrow-down"} size={18} color={isProfitPositive ? "#454b32" : "#C85A5A"} />
+                  <Text className={`font-geist text-[20px] font-bold ${isProfitPositive ? 'text-[#454b32]' : 'text-[#C85A5A]'}`}>
+                    ₱{Math.abs(netProfit).toLocaleString()}
+                  </Text>
                 </View>
               </View>
 
