@@ -23,13 +23,17 @@ export default function DashboardScreen() {
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
-  
+
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
   const totalDailyTasks = dailyTasks.length;
-  const progressPercentage = totalDailyTasks > 0 ? (completedDailyTasks / totalDailyTasks) * 100 : 0;
+  const progressPercentage =
+    totalDailyTasks > 0 ? (completedDailyTasks / totalDailyTasks) * 100 : 0;
 
-  const netProfit = transactions.reduce((acc, curr) => curr.type === 'income' ? acc + curr.cost : acc - curr.cost, 0);
+  const netProfit = transactions.reduce(
+    (acc, curr) => (curr.type === 'income' ? acc + curr.cost : acc - curr.cost),
+    0
+  );
   const isProfitPositive = netProfit >= 0;
 
   // Simple idle animation for the pet
@@ -53,7 +57,7 @@ export default function DashboardScreen() {
       -1,
       true
     );
-  }, []);
+  }, [translateY, scaleY]);
 
   const petStyle = useAnimatedStyle(() => {
     return {
@@ -117,7 +121,7 @@ export default function DashboardScreen() {
           style={{
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.28,
+            shadowOpacity: 0.58,
             shadowRadius: 10,
             elevation: 9,
           }}>
@@ -152,7 +156,13 @@ export default function DashboardScreen() {
                   <Text className="ml-1 font-geist text-xs text-[#49561f]">Completed Today</Text>
                 </View>
                 <View className="h-2 w-full overflow-hidden rounded-full bg-white/30">
-                  <View style={{ width: `${progressPercentage}%`, height: '100%', backgroundColor: '#49561f' }} />
+                  <View
+                    style={{
+                      width: `${progressPercentage}%`,
+                      height: '100%',
+                      backgroundColor: '#49561f',
+                    }}
+                  />
                 </View>
               </View>
             </Pressable>
@@ -166,12 +176,17 @@ export default function DashboardScreen() {
                   <Text
                     className="font-geist text-[13px] font-medium text-[#454b31]"
                     numberOfLines={1}>
-                    Net Profit 
+                    Net Profit
                   </Text>
                 </View>
                 <View className="flex-row items-center gap-1">
-                  <Feather name={isProfitPositive ? "arrow-up" : "arrow-down"} size={18} color={isProfitPositive ? "#454b32" : "#C85A5A"} />
-                  <Text className={`font-geist text-[20px] font-bold ${isProfitPositive ? 'text-[#454b32]' : 'text-[#C85A5A]'}`}>
+                  <Feather
+                    name={isProfitPositive ? 'arrow-up' : 'arrow-down'}
+                    size={18}
+                    color={isProfitPositive ? '#454b32' : '#C85A5A'}
+                  />
+                  <Text
+                    className={`font-geist text-[20px] font-bold ${isProfitPositive ? 'text-[#454b32]' : 'text-[#C85A5A]'}`}>
                     ₱{Math.abs(netProfit).toLocaleString()}
                   </Text>
                 </View>

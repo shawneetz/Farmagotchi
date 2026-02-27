@@ -2,7 +2,6 @@ import { usePathname, router } from 'expo-router';
 import { colors } from 'lib/colors';
 import { AnimatedPressable } from 'lib/utils';
 import { JSX, useState } from 'react';
-import { StyleSheet } from 'react-native';
 
 export const MenuItem = (props: { children: JSX.Element; href: string }) => {
   const [pressed, setPressed] = useState(false);
@@ -32,9 +31,3 @@ export const MenuItem = (props: { children: JSX.Element; href: string }) => {
     </AnimatedPressable>
   );
 };
-
-const styles = StyleSheet.create({
-  menuitem: {
-    padding: 12,
-  },
-});

@@ -50,7 +50,12 @@ export default function OptionModal({
 
           <View className="w-full max-w-[380px] flex-row gap-2 self-center">
             {/* Left Button */}
-            <Pressable className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-400 p-4">
+            <Pressable
+              className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-400 p-4"
+              onPress={() => {
+                onClose();
+                setTimeout(() => router.push('/add-plot'), 300);
+              }}>
               <View className="absolute left-[-22px] top-[-6px] opacity-20">
                 <SproutIcon />
               </View>

@@ -126,11 +126,13 @@ export default function FinanceScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
-        <View className="flex-row items-center justify-between mt-5 mb-2">
+        <View className="mb-2 mt-8 flex-row items-center justify-between">
           <Text className="font-['GeistPixel'] text-[16px] text-[#1D1E20]">
             Projected Income this month
           </Text>
-          <Pressable onPress={() => router.push('/add-resource')} className="rounded-lg bg-neutral-200 px-3 py-1.5">
+          <Pressable
+            onPress={() => router.push('/add-resource')}
+            className="rounded-lg bg-neutral-200 px-3 py-1.5">
             <Text className="font-['GeistPixel'] text-[12px] text-neutral-700">Manage</Text>
           </Pressable>
         </View>

@@ -20,13 +20,14 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
-  if (!loaded && !error) return null; 
+  if (!loaded && !error) return null;
 
   return (
     <SafeAreaProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="add-resource" options={{ headerShown: false, presentation: 'modal' }} />
+        <Stack.Screen name="add-plot" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="dark" />
     </SafeAreaProvider>

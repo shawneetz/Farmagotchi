@@ -16,13 +16,8 @@ import { Feather } from '@expo/vector-icons';
 
 export default function AddResourceScreen() {
   const insets = useSafeAreaInsets();
-  const {
-    transactions,
-    addTransaction,
-    editTransaction,
-    removeTransaction,
-    clearTransactions,
-  } = useFinanceStore();
+  const { transactions, addTransaction, editTransaction, removeTransaction, clearTransactions } =
+    useFinanceStore();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -88,7 +83,6 @@ export default function AddResourceScreen() {
           paddingHorizontal: 20,
         }}
         keyboardShouldPersistTaps="handled">
-        
         {/* Header */}
         <View className="mb-6 flex-row items-center justify-between">
           <Pressable onPress={() => router.back()} className="-ml-2 p-2">
@@ -99,7 +93,7 @@ export default function AddResourceScreen() {
         </View>
 
         {/* Input Form */}
-        <View className="mb-6 rounded-2xl bg-white p-4 shadow-sm border border-neutral-100">
+        <View className="mb-6 rounded-2xl border border-neutral-100 bg-white p-4 shadow-sm">
           <Text className="mb-4 font-geist text-[16px] font-bold text-neutral-900">
             {editingId ? 'Edit Resource' : 'Add New Resource'}
           </Text>
@@ -115,7 +109,12 @@ export default function AddResourceScreen() {
                 paddingVertical: 10,
                 backgroundColor: type === 'expense' ? 'white' : 'transparent',
               }}>
-              <Text style={{ fontFamily: 'GeistPixel', fontSize: 14, color: type === 'expense' ? '#F515B6' : '#9ca3af' }}>
+              <Text
+                style={{
+                  fontFamily: 'GeistPixel',
+                  fontSize: 14,
+                  color: type === 'expense' ? '#F515B6' : '#9ca3af',
+                }}>
                 Expense
               </Text>
             </Pressable>
@@ -129,7 +128,12 @@ export default function AddResourceScreen() {
                 paddingVertical: 10,
                 backgroundColor: type === 'income' ? 'white' : 'transparent',
               }}>
-              <Text style={{ fontFamily: 'GeistPixel', fontSize: 14, color: type === 'income' ? '#65F09F' : '#9ca3af' }}>
+              <Text
+                style={{
+                  fontFamily: 'GeistPixel',
+                  fontSize: 14,
+                  color: type === 'income' ? '#65F09F' : '#9ca3af',
+                }}>
                 Income
               </Text>
             </Pressable>
@@ -186,7 +190,9 @@ export default function AddResourceScreen() {
               }`}>
               <Text
                 className={`font-geist text-[15px] ${
-                  !name.trim() || !cost.trim() || isNaN(Number(cost)) ? 'text-neutral-500' : 'text-white'
+                  !name.trim() || !cost.trim() || isNaN(Number(cost))
+                    ? 'text-neutral-500'
+                    : 'text-white'
                 }`}>
                 {editingId ? 'Update Resource' : 'Add Resource'}
               </Text>
@@ -195,7 +201,7 @@ export default function AddResourceScreen() {
         </View>
 
         {/* List of Resources */}
-        <View className="mt-4 flex-row items-center justify-between mb-4">
+        <View className="mb-4 mt-4 flex-row items-center justify-between">
           <Text className="font-geist text-[18px] text-neutral-900">Current Resources</Text>
           {transactions.length > 0 && (
             <Pressable onPress={handleClearAll}>
@@ -210,10 +216,17 @@ export default function AddResourceScreen() {
           </View>
         ) : (
           transactions.map((t) => (
-            <View key={t.id} className="mb-3 flex-row items-center justify-between rounded-xl bg-white p-4 shadow-sm border border-neutral-100">
+            <View
+              key={t.id}
+              className="mb-3 flex-row items-center justify-between rounded-xl border border-neutral-100 bg-white p-4 shadow-sm">
               <View className="flex-1 pr-4">
-                <Text className="font-geist text-[15px] font-bold text-neutral-900" numberOfLines={1}>{t.name}</Text>
-                <Text className={`font-geist text-[13px] ${t.type === 'income' ? 'text-[#65F09F]' : 'text-[#F515B6]'}`}>
+                <Text
+                  className="font-geist text-[15px] font-bold text-neutral-900"
+                  numberOfLines={1}>
+                  {t.name}
+                </Text>
+                <Text
+                  className={`font-geist text-[13px] ${t.type === 'income' ? 'text-[#65F09F]' : 'text-[#F515B6]'}`}>
                   {t.type === 'income' ? '+' : '-'} ₱{t.cost.toLocaleString()}
                 </Text>
               </View>
@@ -228,7 +241,6 @@ export default function AddResourceScreen() {
             </View>
           ))
         )}
-
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,10 +1,9 @@
 import { colors } from 'lib/colors';
 import { FC } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MenuItem } from './MenuItem';
 import Svg, { Path } from 'react-native-svg';
-import { AnimatedPressable } from 'lib/utils';
 import { PlusButton } from './PlusButton';
 
 export const MenuBar: FC = () => {
