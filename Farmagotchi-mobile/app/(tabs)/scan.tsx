@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -52,9 +52,7 @@ export default function ScanScreen() {
       {/* Background/Base View */}
       <View className="flex-1 items-center justify-center">
         {/* Modal-like Container */}
-        <View
-          className="w-full flex-1 items-center rounded-t-[36px] bg-neutral-100 px-4"
-          style={styles.modalShadow}>
+        <View className="elevation-10 w-full flex-1 items-center rounded-t-[36px] bg-neutral-100 px-4 shadow-lg shadow-[#bcbec8]">
           {/* Header Section */}
           <View className="mt-8 items-center">
             <Text className="text-[24px] text-neutral-900" style={{ fontFamily: 'GeistPixel' }}>
@@ -105,13 +103,3 @@ export default function ScanScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modalShadow: {
-    shadowColor: '#bcbec8',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 18.6,
-    elevation: 10,
-  },
-});
