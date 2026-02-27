@@ -15,21 +15,24 @@ const chartSvgXml = `
 `;
 
 // Breakdown Item Component - Refactored to NativeWind
-const BreakdownItem = ({ label, value, color }: { label: string; value: string; color: string }) => (
+const BreakdownItem = ({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string;
+  color: string;
+}) => (
   <View className="flex-row items-center justify-between py-1.5">
     <View className="flex-1 pr-1">
-      <Text className="text-[#3C3E48] text-[13px] font-['GeistPixel'] leading-4" numberOfLines={2}>
+      <Text className="font-['GeistPixel'] text-[13px] leading-4 text-[#3C3E48]" numberOfLines={2}>
         {label}
       </Text>
     </View>
     <View className="flex-row items-center">
-      <View 
-        className="w-2 h-2 rounded-full mr-1.5"
-        style={{ backgroundColor: color }} 
-      />
-      <Text className="text-[#7B7F8E] text-[12px] font-['GeistPixel'] ">
-        {value}
-      </Text>
+      <View className="mr-1.5 h-2 w-2 rounded-full" style={{ backgroundColor: color }} />
+      <Text className="font-['GeistPixel'] text-[12px] text-[#7B7F8E] ">{value}</Text>
     </View>
   </View>
 );
@@ -39,54 +42,55 @@ export default function FinanceScreen() {
 
   return (
     <View className="flex-1 bg-[#F9FAFA]" style={{ paddingTop: insets.top }}>
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
-        contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}
-      >
-        <Text className="text-center text-[16px] text-[#1D1E20] mt-5 mb-2 font-['GeistPixel']">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
+        <Text className="mb-2 mt-5 text-center font-['GeistPixel'] text-[16px] text-[#1D1E20]">
           Projected Income this month
         </Text>
 
         {/* Income Arc Section */}
-        <View className="items-center justify-center h-[180px] mb-2.5 relative mt-8">
+        <View className="relative mb-2.5 mt-8 h-[180px] items-center justify-center">
           <SvgXml xml={chartSvgXml} width={238} height={206} />
-          <View className="absolute top-[85px] items-cente -mt-8">
-            <Text className="text-[26px] text-black font-['GeistPixel']">₱15000</Text>
-            <Text className="text-[14px] text-[#979AAA] -mt-0.5 font-['GeistPixel']">Total Income</Text>
+          <View className="items-cente absolute top-[85px] -mt-8">
+            <Text className="font-['GeistPixel'] text-[26px] text-black">₱15000</Text>
+            <Text className="-mt-0.5 font-['GeistPixel'] text-[14px] text-[#979AAA]">
+              Total Income
+            </Text>
           </View>
         </View>
 
         {/* Income Breakdown Card */}
-        <View className="bg-white rounded-2xl p-4 flex-row mb-6 shadow-sm shadow-[#E0E1E6] elevation-4">
+        <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
           <View className="flex-1 pr-3">
             <BreakdownItem label="Rice sdfdfdfdfsfsdf" value="₱4500" color="#65F09F" />
             <BreakdownItem label="Carrots" value="₱2500" color="#27ABF1" />
             <BreakdownItem label="Pechay" value="₱2800" color="#23E5DB" />
           </View>
-          <View className="w-[1px] bg-[#E0E1E6] my-1" />
+          <View className="my-1 w-[1px] bg-[#E0E1E6]" />
           <View className="flex-1 pl-3">
             <BreakdownItem label="Mangoes" value="₱3500" color="#B6EA67" />
             <BreakdownItem label="Eggplant" value="₱1700" color="#F515B6" />
           </View>
         </View>
 
-        <Text className="text-[22px] text-[#1D1E20] mb-4 font-['GeistPixel']">Expenses</Text>
+        <Text className="mb-4 font-['GeistPixel'] text-[22px] text-[#1D1E20]">Expenses</Text>
 
         {/* Expenses Bar */}
-        <View className="h-7 w-full flex-row mb-6">
-          <View className="flex-[35] bg-[#65F09F] rounded-[6px] -mr-2 z-30" />
-          <View className="flex-[28] bg-[#F515B6] rounded-[6px] -mr-2 z-20" />
-          <View className="flex-[12] bg-[#27ABF1] rounded-[6px] full -mr-2 z-10" />
-          <View className="flex-[25] bg-[#B6EA67] rounded-[6px] full" />
+        <View className="mb-6 h-7 w-full flex-row">
+          <View className="z-30 -mr-2 flex-[35] rounded-[6px] bg-[#65F09F]" />
+          <View className="z-20 -mr-2 flex-[28] rounded-[6px] bg-[#F515B6]" />
+          <View className="full z-10 -mr-2 flex-[12] rounded-[6px] bg-[#27ABF1]" />
+          <View className="full flex-[25] rounded-[6px] bg-[#B6EA67]" />
         </View>
 
         {/* Expenses Breakdown Card */}
-        <View className="bg-white rounded-2xl p-4 flex-row shadow-sm shadow-[#E0E1E6] elevation-4">
+        <View className="elevation-4 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
           <View className="flex-1 pr-3">
             <BreakdownItem label="Fertilizer" value="₱4500" color="#65F09F" />
             <BreakdownItem label="Water" value="₱2500" color="#27ABF1" />
           </View>
-          <View className="w-[1px] bg-[#E0E1E6] my-1" />
+          <View className="my-1 w-[1px] bg-[#E0E1E6]" />
           <View className="flex-1 pl-3">
             <BreakdownItem label="Machinery" value="₱3500" color="#B6EA67" />
             <BreakdownItem label="Transportation /Gas" value="₱1700" color="#F515B6" />

@@ -54,7 +54,6 @@ export default function MainDashboardMockup() {
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
         <View className="px-4">
-
           {/* Plant Progress Bar */}
           <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
             <MaterialCommunityIcons name="seed" size={18} color="#71ac17" />
