@@ -10,38 +10,42 @@ import Animated, {
   withSequence,
   Easing,
 } from 'react-native-reanimated';
+import { verifyInstallation } from 'nativewind';
+import { getLoadedFonts } from 'expo-font';
 
 export default function MainDashboardMockup() {
   const insets = useSafeAreaInsets();
-
+  verifyInstallation();
+  const fonts = getLoadedFonts()
+  console.log(fonts);
   // Simple idle animation for the pet
-  const translateY = useSharedValue(0);
-  const scaleY = useSharedValue(1);
+  // const translateY = useSharedValue(0);
+  // const scaleY = useSharedValue(1);
 
   useEffect(() => {
-    translateY.value = withRepeat(
-      withSequence(
-        withTiming(-5, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1,
-      true
-    );
-    scaleY.value = withRepeat(
-      withSequence(
-        withTiming(0.98, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-      ),
-      -1,
-      true
-    );
+    // translateY.value = withRepeat(
+    //   withSequence(
+    //     withTiming(-5, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+    //     withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.ease) })
+    //   ),
+    //   -1,
+    //   true
+    // );
+    // scaleY.value = withRepeat(
+    //   withSequence(
+    //     withTiming(0.98, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
+    //     withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) })
+    //   ),
+    //   -1,
+    //   true
+    // );
   }, []);
 
-  const petStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }, { scaleY: scaleY.value }],
-    };
-  });
+  // const petStyle = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [{ translateY: translateY.value }, { scaleY: scaleY.value }],
+  //   };
+  // });
 
   return (
     <View
@@ -58,57 +62,15 @@ export default function MainDashboardMockup() {
           </Pressable>
 
           <Pressable className="flex-row items-center gap-2 rounded-full bg-soft-clay px-4 py-2">
-            <Text className="text-lg font-bold text-rich-soil-brown">Tomato Patch</Text>
+            <Text className="text-lg font-bold text-rich-soil-brown" style={{fontFamily: "GeistPixel"
+      }}>Tomato Patch</Text>
             <Ionicons name="chevron-down" size={16} color="#4B3F35" />
-          </Pressable>
+          </Pressable> 
 
           <Pressable className="relative h-10 w-10 items-center justify-center rounded-full bg-soft-clay">
             <Ionicons name="notifications" size={22} color="#4B3F35" />
             <View className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border border-soft-clay bg-sunlit-gold" />
           </Pressable>
-        </View>
-
-        {/* Pet Interaction Area with Plot Photo Background */}
-        <View className="overflow-hidden rounded-[40px]" style={styles.softShadow}>
-          <ImageBackground
-            source={{
-              uri: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=1000',
-            }}
-            className="items-center justify-center py-6"
-            resizeMode="cover">
-            {/* Subtle Overlay to ensure readability */}
-            <View className="absolute inset-0 bg-black/5" />
-
-            {/* Daily Insight Bubble */}
-            <View className="mb-2 max-w-[80%] rounded-2xl bg-white p-3" style={styles.softShadow}>
-              <Text className="text-center text-xs font-medium text-rich-soil-brown">
-                "Gonna be hot today! Don't forget to water the tomatoes to keep 'em happy."
-              </Text>
-              {/* Simple tail for the bubble */}
-              <View className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1.5 rotate-45 bg-white" />
-            </View>
-
-            {/* Pet Avatar Stage */}
-            <Animated.View style={petStyle} className="my-4 items-center justify-center">
-              <View
-                className="h-32 w-32 items-center justify-center rounded-full border-4 border-earthy-green bg-morning-mist/90"
-                style={styles.softShadow}>
-                {/* Placeholder for actual 2D Vector Illustration */}
-                <Text className="text-5xl">😸</Text>
-              </View>
-            </Animated.View>
-
-            {/* Happiness Bar Container (translucent background for readability) */}
-            <View className="w-full max-w-[180px] gap-1.5 rounded-full bg-white/90 px-3 py-2 backdrop-blur-md">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-[10px] font-bold text-rich-soil-hite">Happiness</Text>
-                <Text className="text-[10px] font-bold text-rich-soil-brown">85%</Text>
-              </View>
-              <View className="h-2 w-full overflow-hidden rounded-full bg-soft-clay/60">
-                <View className="h-full w-[85%] rounded-full bg-sunlit-gold" />
-              </View>
-            </View>
-          </ImageBackground>
         </View>
 
         {/* Quick Widgets */}
@@ -120,7 +82,8 @@ export default function MainDashboardMockup() {
             <Pressable className="flex-1 rounded-3xl bg-soft-clay p-4" style={styles.softShadow}>
               <View className="mb-2 flex-row items-center gap-2">
                 <Ionicons name="checkmark-circle" size={20} color="#4A7C59" />
-                <Text className="font-bold text-rich-soil-brown">Tasks</Text>
+                <Text className="font-bold text-rich-soil-brown" style={{fontFamily: "GeistPixel"
+      }}>Tasks</Text>
               </View>
               <Text
                 className="text-2xl font-bold text-rich-soil-brown"
@@ -153,7 +116,7 @@ export default function MainDashboardMockup() {
             style={styles.softShadow}>
             <View className="gap-1">
               <View className="flex-row items-center gap-2">
-                <MaterialCommunityIcons name="currency-usd-circle" size={20} color="#F4D35E" />
+                {/* <MaterialCommunityIcons name="currency-usd-circle" size={20} color="#F4D35E" /> */}
                 <Text className="font-bold text-rich-soil-brown">Net Profit (Week)</Text>
               </View>
               <Text className="text-xs text-rich-soil-brown/70">
