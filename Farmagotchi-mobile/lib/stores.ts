@@ -63,9 +63,7 @@ export const useFinanceStore = create<FinanceState & FinanceAction>((set) => ({
     })),
   editTransaction: (id, updates) =>
     set((state) => ({
-      transactions: state.transactions.map((t) =>
-        t.id === id ? { ...t, ...updates } : t
-      ),
+      transactions: state.transactions.map((t) => (t.id === id ? { ...t, ...updates } : t)),
     })),
   clearTransactions: () => set({ transactions: [] }),
 }));
@@ -89,23 +87,45 @@ type TaskAction = {
   removeTask: (id: string) => void;
   editTask: (id: string, updates: Partial<Task>) => void;
   toggleTaskCompletion: (id: string) => void;
+  resetAllTasks: () => void;
 };
 
 const initialTasks: Task[] = [
-  { id: '1', title: 'Water the mango tree', isCompleted: false, category: 'daily', happinessReward: 10 },
-  { id: '2', title: 'Check soil moisture', isCompleted: true, category: 'daily', happinessReward: 5 },
-  { id: '3', title: 'Apply fertilizer', isCompleted: false, category: 'weekly', happinessReward: 20 },
-  { id: '4', title: 'Prune dead leaves', isCompleted: false, category: 'miscellaneous', happinessReward: 15 },
+  {
+    id: '1',
+    title: 'Water the mango tree',
+    isCompleted: false,
+    category: 'daily',
+    happinessReward: 10,
+  },
+  {
+    id: '2',
+    title: 'Check soil moisture',
+    isCompleted: true,
+    category: 'daily',
+    happinessReward: 5,
+  },
+  {
+    id: '3',
+    title: 'Apply fertilizer',
+    isCompleted: false,
+    category: 'weekly',
+    happinessReward: 20,
+  },
+  {
+    id: '4',
+    title: 'Prune dead leaves',
+    isCompleted: false,
+    category: 'miscellaneous',
+    happinessReward: 15,
+  },
 ];
 
 export const useTaskStore = create<TaskState & TaskAction>((set) => ({
   tasks: initialTasks,
   addTask: (task) =>
     set((state) => ({
-      tasks: [
-        ...state.tasks,
-        { ...task, id: Math.random().toString(36).substr(2, 9) },
-      ],
+      tasks: [...state.tasks, { ...task, id: Math.random().toString(36).substr(2, 9) }],
     })),
   removeTask: (id) =>
     set((state) => ({
@@ -117,8 +137,10 @@ export const useTaskStore = create<TaskState & TaskAction>((set) => ({
     })),
   toggleTaskCompletion: (id) =>
     set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.id === id ? { ...t, isCompleted: !t.isCompleted } : t
-      ),
+      tasks: state.tasks.map((t) => (t.id === id ? { ...t, isCompleted: !t.isCompleted } : t)),
+    })),
+  resetAllTasks: () =>
+    set((state) => ({
+      tasks: state.tasks.map((t) => ({ ...t, isCompleted: false })),
     })),
 }));
