@@ -3,7 +3,13 @@ import { Modal, View, Text, Pressable, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTaskStore, useFinanceStore, useInsightsModal, useWeatherStore } from '../lib/stores';
+import {
+  useTaskStore,
+  useFinanceStore,
+  useInsightsModal,
+  useWeatherStore,
+  useScanStore,
+} from '../lib/stores';
 
 export default function InsightsModal() {
   const router = useRouter();
@@ -13,6 +19,7 @@ export default function InsightsModal() {
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
   const weather = useWeatherStore();
+  const { scans, setRecentScan } = useScanStore();
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -51,8 +58,20 @@ export default function InsightsModal() {
       insights.push(`The weather in ${weather.location} is great for my growth.`);
     }
 
-    // General Health Stub
-    insights.push('Soil moisture levels are within optimal range for Mangoes.');
+    // Scan Insight
+    if (scans.length > 0) {
+      const lastScan = scans[0];
+      if (lastScan.healthScore > 80) {
+        insights.push(`My last scan was excellent (${lastScan.healthScore}/100).`);
+      } else if (lastScan.healthScore < 60) {
+        insights.push(`The last scan showed some concerns. Please check my tips!`);
+      }
+      if (lastScan.anomalies.length > 0) {
+        insights.push(`Warning: ${lastScan.anomalies[0]} detected in recent analysis.`);
+      }
+    } else {
+      insights.push("I haven't been scanned recently. A quick check-up would be nice!");
+    }
 
     return insights;
   }, [
@@ -62,7 +81,22 @@ export default function InsightsModal() {
     weather.condition,
     weather.highTemp,
     weather.location,
+    scans,
   ]);
+
+  const getTimeAgo = (timestamp: number) => {
+    const diff = Date.now() - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    return 'Just now';
+  };
+
+  const latestScan = scans.length > 0 ? scans[0] : null;
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
@@ -124,21 +158,39 @@ export default function InsightsModal() {
               </View>
             </View>
 
-            {/* Health Scan Stub */}
-            <View className="mb-8 flex-row items-center justify-between rounded-2xl border border-neutral-100 bg-neutral-50 p-4">
+            {/* Health Scan Widget */}
+            <Pressable
+              onPress={() => {
+                if (latestScan) {
+                  close();
+                  setRecentScan(latestScan);
+                } else {
+                  close();
+                  router.push('/scan');
+                }
+              }}
+              className="mb-8 flex-row items-center justify-between rounded-2xl border border-neutral-100 bg-neutral-50 p-4 active:bg-neutral-100">
               <View className="flex-row items-center gap-3">
                 <View className="h-10 w-10 items-center justify-center rounded-xl border border-neutral-100 bg-white">
                   <Feather name="camera" size={20} color="#71ac17" />
                 </View>
                 <View>
-                  <Text className="font-geist text-sm font-bold text-[#28292f]">Recent Scan</Text>
+                  <Text className="font-geist text-sm font-bold text-[#28292f]">
+                    {latestScan ? 'Recent Scan' : 'No Scan Data'}
+                  </Text>
                   <Text className="font-geist text-xs text-neutral-500">
-                    2 days ago • All optimal
+                    {latestScan
+                      ? `${getTimeAgo(latestScan.createdAt)} • ${latestScan.healthScore}/100 Health`
+                      : 'Take a photo for AI analysis'}
                   </Text>
                 </View>
               </View>
-              <Feather name="chevron-right" size={20} color="#ccc" />
-            </View>
+              <Feather
+                name={latestScan ? 'chevron-right' : 'plus'}
+                size={20}
+                color={latestScan ? '#ccc' : '#71ac17'}
+              />
+            </Pressable>
           </ScrollView>
 
           {/* Action Button */}

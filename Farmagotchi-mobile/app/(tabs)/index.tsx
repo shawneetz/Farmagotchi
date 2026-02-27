@@ -14,7 +14,13 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { verifyInstallation } from 'nativewind';
-import { useTaskStore, useFinanceStore, useInsightsModal, useWeatherStore } from '../../lib/stores';
+import {
+  useTaskStore,
+  useFinanceStore,
+  useInsightsModal,
+  useWeatherStore,
+  useScanStore,
+} from '../../lib/stores';
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
@@ -25,6 +31,9 @@ export default function DashboardScreen() {
   const transactions = useFinanceStore((state) => state.transactions);
   const { open: openInsights, showTooltip, dismissTooltip } = useInsightsModal();
   const weather = useWeatherStore();
+  const { scans, setRecentScan } = useScanStore();
+
+  const latestScan = scans.length > 0 ? scans[0] : null;
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -279,6 +288,39 @@ export default function DashboardScreen() {
                 </View>
               </View>
             </View>
+
+            {/* Scan Widget */}
+            <Pressable
+              onPress={() => {
+                if (latestScan) {
+                  setRecentScan(latestScan);
+                } else {
+                  router.push('/scan');
+                }
+              }}
+              className="w-full flex-row items-center justify-between rounded-[19px] border border-[#e1f6c0] bg-white p-4">
+              <View className="flex-row items-center gap-3">
+                <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary-100">
+                  <Feather name="camera" size={20} color="#71ac17" />
+                </View>
+                <View>
+                  <Text className="font-geist text-sm font-bold text-[#28292f]">
+                    {latestScan ? 'Latest Scan Result' : 'No Scan Data'}
+                  </Text>
+                  <Text className="font-geist text-xs text-neutral-500">
+                    {latestScan
+                      ? `Health Score: ${latestScan.healthScore}/100`
+                      : 'Scan your crop for AI insights'}
+                  </Text>
+                </View>
+              </View>
+              <View className="flex-row items-center gap-1">
+                <Text className="font-geist text-xs font-medium text-primary-700">
+                  {latestScan ? 'View' : 'Start'}
+                </Text>
+                <Feather name="chevron-right" size={16} color="#71ac17" />
+              </View>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

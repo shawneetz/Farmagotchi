@@ -240,3 +240,47 @@ export const useWeatherStore = create<WeatherState & WeatherAction>((set) => ({
   condition: 'cloud',
   updateWeather: (weather) => set((state) => ({ ...state, ...weather })),
 }));
+
+export type Scan = {
+  id: string;
+  plotId: string;
+  imageUrl: string;
+  healthScore: number;
+  anomalies: string[];
+  tips: string[];
+  happinessImpact: number;
+  createdAt: number;
+};
+
+type ScanState = {
+  scans: Scan[];
+  recentScan: Scan | null;
+  isAnalyzing: boolean;
+};
+
+type ScanAction = {
+  addScan: (scan: Omit<Scan, 'id' | 'createdAt'>) => void;
+  setAnalyzing: (isAnalyzing: boolean) => void;
+  setRecentScan: (scan: Scan | null) => void;
+  clearRecentScan: () => void;
+};
+
+export const useScanStore = create<ScanState & ScanAction>((set) => ({
+  scans: [],
+  recentScan: null,
+  isAnalyzing: false,
+  addScan: (scan) => {
+    const newScan = {
+      ...scan,
+      id: Math.random().toString(36).substr(2, 9),
+      createdAt: Date.now(),
+    };
+    set((state) => ({
+      scans: [newScan, ...state.scans],
+      recentScan: newScan,
+    }));
+  },
+  setAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
+  setRecentScan: (scan) => set({ recentScan: scan }),
+  clearRecentScan: () => set({ recentScan: null }),
+}));
