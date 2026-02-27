@@ -112,122 +112,126 @@ export default function DashboardScreen() {
     );
   }, [tooltipTranslateY]);
 
-  const tooltipStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: tooltipTranslateY.value }],
+      const tooltipStyle = useAnimatedStyle(() => {
+      return {
+        transform: [{ translateY: tooltipTranslateY.value }],
+      };
+    });
+  
+    const plantImages: Record<string, any> = {
+      'tree.png': require('../../assets/tree.png'),
+      'sprout.svg': require('../../assets/lucide/sprout.svg'),
     };
-  });
-
-  return (
-    <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}>
-        <View className="px-4">
-          {/* Plant Happiness Bar */}
-          <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
-            <MaterialCommunityIcons name="emoticon-sad-outline" size={18} color="#7c7a65" />
-            <View className="relative h-3 flex-1 overflow-hidden rounded-full bg-[#d3d3ca]">
-              <View
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: `${plant.happiness}%`,
-                }}>
-                <Svg width="100%" height="100%">
-                  <Defs>
-                    <LinearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <Stop offset="0%" stopColor="#a3e540" />
-                      <Stop offset="100%" stopColor="#e1f6c0" />
-                    </LinearGradient>
-                  </Defs>
-                  <Rect width="100%" height="100%" fill="url(#grad1)" />
-                </Svg>
-              </View>
-            </View>
-            <MaterialCommunityIcons name="emoticon-happy-outline" size={18} color="#71ac17" />
-          </View>
-
-          {/* Central Plant Area */}
-          <Pressable
-            onPress={() => {
-              openInsights();
-              dismissTooltip();
-            }}
-            className="relative mt-16 h-[300px] items-center justify-center active:opacity-90">
-            {/* Tooltip */}
-            {showTooltip && (
-              <Animated.View
-                style={[
-                  tooltipStyle,
-                  {
-                    position: 'absolute',
-                    top: -20,
-                    zIndex: 20,
-                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    borderRadius: 12,
-                    borderWidth: 1,
-                    borderColor: 'rgba(113, 172, 23, 0.3)',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.05,
-                    shadowRadius: 2,
-                    elevation: 2,
-                  },
-                ]}>
-                <View className="flex-row items-center gap-1.5">
-                  <MaterialCommunityIcons name="lightbulb-on-outline" size={13} color="#71ac17" />
-                  <Text className="font-geist text-[10px] font-medium text-[#575647]">
-                    Tap for insights
-                  </Text>
-                </View>
-                {/* Tooltip Arrow */}
+  
+    return (
+      <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}>
+          <View className="px-4">
+            {/* Plant Happiness Bar */}
+            <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
+              <MaterialCommunityIcons name="emoticon-sad-outline" size={18} color="#7c7a65" />
+              <View className="relative h-3 flex-1 overflow-hidden rounded-full bg-[#d3d3ca]">
                 <View
                   style={{
                     position: 'absolute',
-                    bottom: -5,
-                    left: '50%',
-                    marginLeft: -5,
-                    width: 0,
-                    height: 0,
-                    borderLeftWidth: 5,
-                    borderRightWidth: 5,
-                    borderTopWidth: 5,
-                    borderLeftColor: 'transparent',
-                    borderRightColor: 'transparent',
-                    borderTopColor: 'rgba(255, 255, 255, 0.85)',
-                  }}
-                />
-              </Animated.View>
-            )}
-
-            <Animated.View style={[petStyle, { alignItems: 'center' }]}>
-              <View className="z-10 h-[340px] w-[200px] overflow-visible">
-                <Image
-                  source={require('../../assets/tree.png')}
-                  style={{ width: '100%', height: '100%' }}
-                  contentFit="contain"
-                />
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: `${plant.happiness}%`,
+                  }}>
+                  <Svg width="100%" height="100%">
+                    <Defs>
+                      <LinearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <Stop offset="0%" stopColor="#a3e540" />
+                        <Stop offset="100%" stopColor="#e1f6c0" />
+                      </LinearGradient>
+                    </Defs>
+                    <Rect width="100%" height="100%" fill="url(#grad1)" />
+                  </Svg>
+                </View>
               </View>
-              <View className="-mt-10 h-[80px] w-[140px]">
-                <Image
-                  source={require('../../assets/pot.png')}
-                  style={{ width: '100%', height: '100%' }}
-                  contentFit="contain"
-                />
-              </View>
-            </Animated.View>
-            <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
-              <Text className="font-geist text-base font-medium text-white">{plant.name}</Text>
+              <MaterialCommunityIcons name="emoticon-happy-outline" size={18} color="#71ac17" />
             </View>
-          </Pressable>
-        </View>
-
+  
+            {/* Central Plant Area */}
+            <Pressable
+              onPress={() => {
+                openInsights();
+                dismissTooltip();
+              }}
+              className="relative mt-16 h-[300px] items-center justify-center active:opacity-90">
+              {/* Tooltip */}
+              {showTooltip && (
+                <Animated.View
+                  style={[
+                    tooltipStyle,
+                    {
+                      position: 'absolute',
+                      top: -20,
+                      zIndex: 20,
+                      backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: 'rgba(113, 172, 23, 0.3)',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: 0.05,
+                      shadowRadius: 2,
+                      elevation: 2,
+                    },
+                  ]}>
+                  <View className="flex-row items-center gap-1.5">
+                    <MaterialCommunityIcons name="lightbulb-on-outline" size={13} color="#71ac17" />
+                    <Text className="font-geist text-[10px] font-medium text-[#575647]">
+                      Tap for insights
+                    </Text>
+                  </View>
+                  {/* Tooltip Arrow */}
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: -5,
+                      left: '50%',
+                      marginLeft: -5,
+                      width: 0,
+                      height: 0,
+                      borderLeftWidth: 5,
+                      borderRightWidth: 5,
+                      borderTopWidth: 5,
+                      borderLeftColor: 'transparent',
+                      borderRightColor: 'transparent',
+                      borderTopColor: 'rgba(255, 255, 255, 0.85)',
+                    }}
+                  />
+                </Animated.View>
+              )}
+  
+              <Animated.View style={[petStyle, { alignItems: 'center' }]}>
+                <View className="z-10 h-[340px] w-[200px] overflow-visible">
+                  <Image
+                    source={plantImages[plant.petImage] || require('../../assets/tree.png')}
+                    style={{ width: '100%', height: '100%' }}
+                    contentFit="contain"
+                  />
+                </View>
+                <View className="-mt-10 h-[80px] w-[140px]">
+                  <Image
+                    source={require('../../assets/pot.png')}
+                    style={{ width: '100%', height: '100%' }}
+                    contentFit="contain"
+                  />
+                </View>
+              </Animated.View>
+              <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
+                <Text className="font-geist text-base font-medium text-white">{plant.name}</Text>
+              </View>
+            </Pressable>
+          </View>
         {/* Bottom Container */}
         <View
           className="mt-24 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"

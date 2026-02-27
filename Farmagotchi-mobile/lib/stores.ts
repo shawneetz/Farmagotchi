@@ -324,19 +324,23 @@ export const useScanStore = create<ScanState & ScanAction>((set) => ({
 type PlantState = {
   name: string;
   happiness: number; // 0 to 100
+  petImage: string;
 };
 
 type PlantAction = {
   updateHappiness: (amount: number) => void;
   setName: (name: string) => void;
+  setPetImage: (image: string) => void;
 };
 
 export const usePlantStore = create<PlantState & PlantAction>((set) => ({
   name: 'Mango tree',
   happiness: 70.68,
+  petImage: 'tree.png',
   updateHappiness: (amount) =>
     set((state) => ({
       happiness: Math.min(100, Math.max(0, state.happiness + amount)),
     })),
   setName: (name) => set({ name }),
+  setPetImage: (image) => set({ petImage: image }),
 }));
