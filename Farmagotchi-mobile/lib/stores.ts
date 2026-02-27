@@ -60,3 +60,56 @@ export const useFinanceStore = create<FinanceState & FinanceAction>((set) => ({
       transactions: state.transactions.filter((t) => t.id !== id),
     })),
 }));
+
+export type TaskCategory = 'daily' | 'weekly' | 'miscellaneous';
+
+export type Task = {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+  category: TaskCategory;
+  happinessReward: number;
+};
+
+type TaskState = {
+  tasks: Task[];
+};
+
+type TaskAction = {
+  addTask: (task: Omit<Task, 'id'>) => void;
+  removeTask: (id: string) => void;
+  editTask: (id: string, updates: Partial<Task>) => void;
+  toggleTaskCompletion: (id: string) => void;
+};
+
+const initialTasks: Task[] = [
+  { id: '1', title: 'Water the mango tree', isCompleted: false, category: 'daily', happinessReward: 10 },
+  { id: '2', title: 'Check soil moisture', isCompleted: true, category: 'daily', happinessReward: 5 },
+  { id: '3', title: 'Apply fertilizer', isCompleted: false, category: 'weekly', happinessReward: 20 },
+  { id: '4', title: 'Prune dead leaves', isCompleted: false, category: 'miscellaneous', happinessReward: 15 },
+];
+
+export const useTaskStore = create<TaskState & TaskAction>((set) => ({
+  tasks: initialTasks,
+  addTask: (task) =>
+    set((state) => ({
+      tasks: [
+        ...state.tasks,
+        { ...task, id: Math.random().toString(36).substr(2, 9) },
+      ],
+    })),
+  removeTask: (id) =>
+    set((state) => ({
+      tasks: state.tasks.filter((t) => t.id !== id),
+    })),
+  editTask: (id, updates) =>
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+    })),
+  toggleTaskCompletion: (id) =>
+    set((state) => ({
+      tasks: state.tasks.map((t) =>
+        t.id === id ? { ...t, isCompleted: !t.isCompleted } : t
+      ),
+    })),
+}));

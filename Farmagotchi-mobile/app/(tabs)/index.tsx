@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
@@ -13,10 +14,18 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { verifyInstallation } from 'nativewind';
+import { useTaskStore } from '../../lib/stores';
 
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   verifyInstallation();
+
+  const tasks = useTaskStore((state) => state.tasks);
+  const dailyTasks = tasks.filter((t) => t.category === 'daily');
+  const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
+  const totalDailyTasks = dailyTasks.length;
+  const progressPercentage = totalDailyTasks > 0 ? (completedDailyTasks / totalDailyTasks) * 100 : 0;
 
   // Simple idle animation for the pet
   const translateY = useSharedValue(0);
@@ -110,7 +119,9 @@ export default function DashboardScreen() {
           {/* Widgets Container */}
           <View className="gap-4">
             {/* Tasks Widget */}
-            <View className="relative w-full overflow-hidden rounded-[19px]">
+            <Pressable
+              onPress={() => router.push('/tasks')}
+              className="relative w-full overflow-hidden rounded-[19px]">
               <View className="absolute inset-0">
                 <Svg width="100%" height="100%">
                   <Defs>
@@ -131,15 +142,15 @@ export default function DashboardScreen() {
                 />
                 <Text className="mb-1 font-geist text-sm font-medium text-[#454b31]">Tasks</Text>
                 <View className="mb-2 flex-row items-baseline gap-1">
-                  <Text className="font-geist text-3xl text-[#49561f]">2</Text>
-                  <Text className="font-geist text-base text-[#698312]">/4</Text>
+                  <Text className="font-geist text-3xl text-[#49561f]">{completedDailyTasks}</Text>
+                  <Text className="font-geist text-base text-[#698312]">/{totalDailyTasks}</Text>
                   <Text className="ml-1 font-geist text-xs text-[#49561f]">Completed Today</Text>
                 </View>
                 <View className="h-2 w-full overflow-hidden rounded-full bg-white/30">
-                  <View style={{ width: '50%', height: '100%', backgroundColor: '#49561f' }} />
+                  <View style={{ width: `${progressPercentage}%`, height: '100%', backgroundColor: '#49561f' }} />
                 </View>
               </View>
-            </View>
+            </Pressable>
 
             {/* Row for Net Profit and Weather */}
             <View className="h-[95px] flex-row gap-4">
