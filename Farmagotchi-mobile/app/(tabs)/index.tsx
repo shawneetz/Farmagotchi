@@ -20,6 +20,7 @@ import {
   useInsightsModal,
   useWeatherStore,
   useScanStore,
+  usePlantStore,
 } from '../../lib/stores';
 
 export default function DashboardScreen() {
@@ -32,6 +33,7 @@ export default function DashboardScreen() {
   const { open: openInsights, showTooltip, dismissTooltip } = useInsightsModal();
   const weather = useWeatherStore();
   const { scans, setRecentScan } = useScanStore();
+  const plant = usePlantStore();
 
   const latestScan = scans.length > 0 ? scans[0] : null;
 
@@ -102,11 +104,18 @@ export default function DashboardScreen() {
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
         <View className="px-4">
-          {/* Plant Progress Bar */}
+          {/* Plant Happiness Bar */}
           <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
-            <MaterialCommunityIcons name="seed" size={18} color="#71ac17" />
+            <MaterialCommunityIcons name="emoticon-sad-outline" size={18} color="#7c7a65" />
             <View className="relative h-3 flex-1 overflow-hidden rounded-full bg-[#d3d3ca]">
-              <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '70.68%' }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: `${plant.happiness}%`,
+                }}>
                 <Svg width="100%" height="100%">
                   <Defs>
                     <LinearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -118,7 +127,7 @@ export default function DashboardScreen() {
                 </Svg>
               </View>
             </View>
-            <MaterialCommunityIcons name="food-apple-outline" size={18} color="#ccc" />
+            <MaterialCommunityIcons name="emoticon-happy-outline" size={18} color="#71ac17" />
           </View>
 
           {/* Central Plant Area */}
@@ -193,7 +202,7 @@ export default function DashboardScreen() {
               </View>
             </Animated.View>
             <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
-              <Text className="font-geist text-base font-medium text-white">Mango tree</Text>
+              <Text className="font-geist text-base font-medium text-white">{plant.name}</Text>
             </View>
           </Pressable>
         </View>

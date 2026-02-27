@@ -9,6 +9,7 @@ import {
   useInsightsModal,
   useWeatherStore,
   useScanStore,
+  usePlantStore,
 } from '../lib/stores';
 
 export default function InsightsModal() {
@@ -20,6 +21,7 @@ export default function InsightsModal() {
   const transactions = useFinanceStore((state) => state.transactions);
   const weather = useWeatherStore();
   const { scans, setRecentScan } = useScanStore();
+  const plant = usePlantStore();
 
   const dailyTasks = tasks.filter((t) => t.category === 'daily');
   const completedDailyTasks = dailyTasks.filter((t) => t.isCompleted).length;
@@ -111,8 +113,10 @@ export default function InsightsModal() {
 
           <View className="mb-6 flex-row items-center justify-between">
             <View>
-              <Text className="font-geist text-2xl font-bold text-[#28292f]">Mango tree</Text>
-              <Text className="font-geist text-sm text-[#71ac17]">Healthy • Growth Stage 3</Text>
+              <Text className="font-geist text-2xl font-bold text-[#28292f]">{plant.name}</Text>
+              <Text className="font-geist text-sm text-[#71ac17]">
+                Healthy • {Math.round(plant.happiness)}% Happiness
+              </Text>
             </View>
             <Pressable
               className="h-10 w-10 items-center justify-center rounded-full bg-neutral-100"

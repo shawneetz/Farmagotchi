@@ -284,3 +284,23 @@ export const useScanStore = create<ScanState & ScanAction>((set) => ({
   setRecentScan: (scan) => set({ recentScan: scan }),
   clearRecentScan: () => set({ recentScan: null }),
 }));
+
+type PlantState = {
+  name: string;
+  happiness: number; // 0 to 100
+};
+
+type PlantAction = {
+  updateHappiness: (amount: number) => void;
+  setName: (name: string) => void;
+};
+
+export const usePlantStore = create<PlantState & PlantAction>((set) => ({
+  name: 'Mango tree',
+  happiness: 70.68,
+  updateHappiness: (amount) =>
+    set((state) => ({
+      happiness: Math.min(100, Math.max(0, state.happiness + amount)),
+    })),
+  setName: (name) => set({ name }),
+}));

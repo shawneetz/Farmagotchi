@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useChatStore, useTaskStore, useFinanceStore } from '../lib/stores';
+import { useChatStore, useTaskStore, useFinanceStore, usePlantStore } from '../lib/stores';
 
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
@@ -27,6 +27,7 @@ export default function ChatScreen() {
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
+  const plant = usePlantStore();
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -47,7 +48,7 @@ export default function ChatScreen() {
 
     const responses = [
       "I'm feeling great today! The soil moisture is perfect.",
-      'Thanks for chatting! I love being your Mango tree.',
+      `Thanks for chatting! I love being your ${plant.name}.`,
       "Did you know Mangoes are known as the 'king of fruits'?",
     ];
 
@@ -129,7 +130,7 @@ export default function ChatScreen() {
             <Feather name="chevron-left" size={24} color="#28292f" />
           </Pressable>
           <View>
-            <Text className="font-geist text-lg font-bold text-[#28292f]">Mango tree</Text>
+            <Text className="font-geist text-lg font-bold text-[#28292f]">{plant.name}</Text>
             <Text className="font-geist text-xs text-[#71ac17]">Online • Your Pet</Text>
           </View>
         </View>
