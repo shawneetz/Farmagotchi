@@ -7,7 +7,7 @@ import Svg, { Path } from 'react-native-svg';
 
 export const PlusButton = () => {
   const [pressed, setPressed] = useState(false);
-  const openModal = useModal(state => state.open);
+  const openModal = useModal((state) => state.open);
   return (
     <AnimatedPressable
       style={[
@@ -19,8 +19,10 @@ export const PlusButton = () => {
         styles.addButton,
       ]}
       onPressIn={() => setPressed(true)}
-      onPressOut={() => {setPressed(false); openModal()}}
-      >
+      onPressOut={() => {
+        setPressed(false);
+        openModal();
+      }}>
       <Svg width="32" height="32" viewBox="0 0 31 31" fill="none">
         <Path
           d="M6.3161 15.1586H24.0011M15.1586 6.31604V24.0011"

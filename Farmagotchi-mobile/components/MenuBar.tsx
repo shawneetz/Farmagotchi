@@ -33,9 +33,7 @@ export const MenuBar: FC = () => {
           />
         </Svg>
       </MenuItem>
-      <View style={{width: 60}}>
-
-      </View>
+      <View style={{ width: 60 }}></View>
       <PlusButton />
       <MenuItem href="/finance">
         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -83,5 +81,3 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 });
-
-

@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, View, Text, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path, G } from 'react-native-svg';
+import { router } from 'expo-router';
 
 const SproutIcon = ({ width = 115, height = 115 }) => (
   <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
@@ -57,7 +58,12 @@ export default function OptionModal({
             </Pressable>
 
             {/* Right Button */}
-            <Pressable className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-100 p-4">
+            <Pressable
+              className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-100 p-4"
+              onPress={() => {
+                onClose();
+                setTimeout(() => router.push('/add-resource'), 300);
+              }}>
               <View className="absolute left-[83px] top-[-2px]">
                 <SackIcon />
               </View>

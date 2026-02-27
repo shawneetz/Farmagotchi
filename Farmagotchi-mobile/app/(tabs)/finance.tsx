@@ -1,6 +1,7 @@
 import { View, Text, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
+import { useFinanceStore } from 'lib/stores';
 
 const chartSvgXml = `
 <svg width="238" height="206" viewBox="0 0 237.898 205.745" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +15,9 @@ const chartSvgXml = `
 </svg>
 `;
 
-// Breakdown Item Component - Refactored to NativeWind
+const COLORS = ['#65F09F', '#27ABF1', '#23E5DB', '#B6EA67', '#F515B6'];
+
+// Breakdown Item Component
 const BreakdownItem = ({
   label,
   value,
@@ -39,6 +42,82 @@ const BreakdownItem = ({
 
 export default function FinanceScreen() {
   const insets = useSafeAreaInsets();
+  const transactions = useFinanceStore((state) => state.transactions);
+
+  const incomes = transactions.filter((t) => t.type === 'income');
+  const expenses = transactions.filter((t) => t.type === 'expense');
+
+  const totalIncome = incomes.reduce((acc, curr) => acc + curr.cost, 0);
+
+  const renderBreakdown = (items: typeof transactions, isExpense = false) => {
+    if (items.length === 0) {
+      return (
+        <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
+          <Text className="font-['GeistPixel'] text-[13px] text-[#7B7F8E]">No items yet.</Text>
+        </View>
+      );
+    }
+
+    const half = Math.ceil(items.length / 2);
+    const left = items.slice(0, half);
+    const right = items.slice(half);
+
+    return (
+      <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
+        <View className="flex-1 pr-3">
+          {left.map((item, index) => (
+            <BreakdownItem
+              key={item.id}
+              label={item.name}
+              value={`₱${item.cost}`}
+              color={COLORS[index % COLORS.length]}
+            />
+          ))}
+        </View>
+        <View className="my-1 w-[1px] bg-[#E0E1E6]" />
+        <View className="flex-1 pl-3">
+          {right.map((item, index) => (
+            <BreakdownItem
+              key={item.id}
+              label={item.name}
+              value={`₱${item.cost}`}
+              color={COLORS[(index + half) % COLORS.length]}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  };
+
+  // Render proportional segments for expenses bar
+  const renderExpenseBar = () => {
+    if (expenses.length === 0) return null;
+
+    const totalExpenses = expenses.reduce((acc, curr) => acc + curr.cost, 0);
+    if (totalExpenses === 0) return null;
+
+    // Sort to keep biggest segments on the left, limit to top 4 for visual clarity
+    const topExpenses = [...expenses].sort((a, b) => b.cost - a.cost).slice(0, 4);
+
+    return (
+      <View className="mb-6 h-7 w-full flex-row">
+        {topExpenses.map((expense, index) => {
+          const flexValue = Math.round((expense.cost / totalExpenses) * 100);
+          return (
+            <View
+              key={expense.id}
+              className={`rounded-[6px] ${index !== topExpenses.length - 1 ? '-mr-2' : ''}`}
+              style={{
+                flex: flexValue,
+                backgroundColor: COLORS[index % COLORS.length],
+                zIndex: 40 - index * 10,
+              }}
+            />
+          );
+        })}
+      </View>
+    );
+  };
 
   return (
     <View className="flex-1 bg-[#F9FAFA]" style={{ paddingTop: insets.top }}>
@@ -52,8 +131,8 @@ export default function FinanceScreen() {
         {/* Income Arc Section */}
         <View className="relative mb-2.5 mt-8 h-[180px] items-center justify-center">
           <SvgXml xml={chartSvgXml} width={238} height={206} />
-          <View className="items-cente absolute top-[85px] -mt-8">
-            <Text className="font-['GeistPixel'] text-[26px] text-black">₱15000</Text>
+          <View className="absolute top-[85px] -mt-8 items-center">
+            <Text className="font-['GeistPixel'] text-[26px] text-black">₱{totalIncome}</Text>
             <Text className="-mt-0.5 font-['GeistPixel'] text-[14px] text-[#979AAA]">
               Total Income
             </Text>
@@ -61,41 +140,15 @@ export default function FinanceScreen() {
         </View>
 
         {/* Income Breakdown Card */}
-        <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
-          <View className="flex-1 pr-3">
-            <BreakdownItem label="Rice sdfdfdfdfsfsdf" value="₱4500" color="#65F09F" />
-            <BreakdownItem label="Carrots" value="₱2500" color="#27ABF1" />
-            <BreakdownItem label="Pechay" value="₱2800" color="#23E5DB" />
-          </View>
-          <View className="my-1 w-[1px] bg-[#E0E1E6]" />
-          <View className="flex-1 pl-3">
-            <BreakdownItem label="Mangoes" value="₱3500" color="#B6EA67" />
-            <BreakdownItem label="Eggplant" value="₱1700" color="#F515B6" />
-          </View>
-        </View>
+        {renderBreakdown(incomes)}
 
         <Text className="mb-4 font-['GeistPixel'] text-[22px] text-[#1D1E20]">Expenses</Text>
 
         {/* Expenses Bar */}
-        <View className="mb-6 h-7 w-full flex-row">
-          <View className="z-30 -mr-2 flex-[35] rounded-[6px] bg-[#65F09F]" />
-          <View className="z-20 -mr-2 flex-[28] rounded-[6px] bg-[#F515B6]" />
-          <View className="full z-10 -mr-2 flex-[12] rounded-[6px] bg-[#27ABF1]" />
-          <View className="full flex-[25] rounded-[6px] bg-[#B6EA67]" />
-        </View>
+        {renderExpenseBar()}
 
         {/* Expenses Breakdown Card */}
-        <View className="elevation-4 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
-          <View className="flex-1 pr-3">
-            <BreakdownItem label="Fertilizer" value="₱4500" color="#65F09F" />
-            <BreakdownItem label="Water" value="₱2500" color="#27ABF1" />
-          </View>
-          <View className="my-1 w-[1px] bg-[#E0E1E6]" />
-          <View className="flex-1 pl-3">
-            <BreakdownItem label="Machinery" value="₱3500" color="#B6EA67" />
-            <BreakdownItem label="Transportation /Gas" value="₱1700" color="#F515B6" />
-          </View>
-        </View>
+        {renderBreakdown(expenses, true)}
       </ScrollView>
     </View>
   );

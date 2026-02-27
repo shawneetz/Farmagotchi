@@ -19,10 +19,14 @@ export default function RootLayout() {
       console.log(loaded, error);
     }
   }, [loaded, error]);
+
+  if (!loaded && !error) return null; 
+
   return (
     <SafeAreaProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="add-resource" options={{ headerShown: false, presentation: 'modal' }} />
       </Stack>
       <StatusBar style="dark" />
     </SafeAreaProvider>
