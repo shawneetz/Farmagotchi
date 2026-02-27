@@ -5,6 +5,9 @@ module.exports = {
   presets: [require('nativewind/preset')],
   theme: {
     extend: {
+      fontFamily: {
+        geist: ['GeistPixel'],
+      },
       colors: {
         'earthy-green': '#4A7C59',
         'sunlit-gold': '#F4D35E',
