@@ -31,28 +31,37 @@ export default function MainDashboardMockup() {
               </Svg>
             </View>
           </View>
-          <MaterialCommunityIcons name="food-apple" size={18} color="#b6ea67" />
+          <MaterialCommunityIcons name="food-apple-outline" size={18} color="#ccc"  />
         </View>
 
         {/* Central Plant Area */}
-        <View className="items-center relative mt-6 h-[340px]">
-          <View className="w-[180px] h-[320px] rounded-2xl overflow-visible justify-center items-center ">
-            <Image 
-              source={require('../assets/tree.png')} 
-              style={{ width: '100%', height: '100%' }} 
-              contentFit="contain" 
-            />
+        <View className="items-center relative mt-8 h-[380px] justify-center">
+          <View className="items-center">
+            <View className="w-[200px] h-[350px] overflow-visible z-10">
+              <Image 
+                source={require('../assets/tree.png')} 
+                style={{ width: '100%', height: '100%' }} 
+                contentFit="contain" 
+              />
+            </View>
+            <View className="w-[160px] h-[100px] -mt-10">
+              <Image 
+                source={require('../assets/pot.png')} 
+                style={{ width: '100%', height: '100%' }} 
+                contentFit="contain" 
+              />
+            </View>
           </View>
-          <View className="absolute bottom-4 bg-[rgba(40,41,47,0.8)] border border-black/20 px-4 py-1.5 rounded-lg shadow-sm">
+          <View className="absolute bottom-0 bg-[rgba(40,41,47,0.8)] border border-black/20 px-4 py-1.5 rounded-lg shadow-sm">
             <Text className="text-white text-base font-medium">Mango tree</Text>
           </View>
         </View>
 
         {/* Bottom Container */}
-        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-24 px-4 py-6 shadow-xl shadow-offset-h-10" style={styles.shadow}>
+        <View className="flex-1 bg-[#f9fafa] rounded-t-[36px] mt-16 px-4 py-6" style={styles.shadow}>
           
           {/* Tasks Widget */}
-          <View className="w-full relative rounded-[19px] overflow-hidden mb-4">
+          <View className="w-full relative rounded-[19px] overflow-hidden mb-4" >
             <View className="absolute inset-0">
               <Svg width="100%" height="100%">
                 <Defs>
@@ -96,7 +105,9 @@ export default function MainDashboardMockup() {
           {/* Row for Net Profit and Weather */}
           <View className="flex-row gap-4 h-[95px]">
             {/* Net Profit Widget */}
-            <View className="flex-[1_0_0] rounded-[19px] border border-[#e0e1e6] bg-[#f9fafa] p-4 justify-center">
+            <View 
+              className="flex-[1_0_0] rounded-[19px] border border-[#e0e1e6] bg-[#f9fafa] p-4 justify-center"
+            >
               <View className="flex-row items-center gap-1.5 mb-2">
                 <MaterialCommunityIcons name="cash-fast" size={16} color="#454b31" />
                 <Text className="text-[#454b31] text-[13px] font-medium" numberOfLines={1}>Net Profit (Week)</Text>
@@ -108,7 +119,9 @@ export default function MainDashboardMockup() {
             </View>
 
             {/* Weather Widget */}
-            <View className="flex-[1_0_0] rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4 flex-row items-center gap-3">
+            <View 
+              className="flex-[1_0_0] rounded-[19px] border border-[#b6ea67] bg-[#e1f6c0] p-4 flex-row items-center gap-3"
+            >
               <Feather name="cloud" size={40} color="#71ac17" />
               <View className="flex-shrink">
                 <Text className="text-[#7c7a65] text-xs font-medium">Los Baños</Text>
@@ -127,8 +140,8 @@ const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 1,
-    shadowRadius: 88.8,
-    elevation: 8,
-  }
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    elevation: 9,
+  },
 });
