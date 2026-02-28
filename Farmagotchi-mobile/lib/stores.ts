@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { PlotFormData } from './types';
 
 type ModalState = {
   visible: boolean;
@@ -344,3 +345,22 @@ export const usePlantStore = create<PlantState & PlantAction>((set) => ({
   setName: (name) => set({ name }),
   setPetImage: (image) => set({ petImage: image }),
 }));
+
+
+type PlotData = {plots: PlotFormData[]};
+type PlotAction = {
+  removePlot: (name: string) => void;
+  addPlot: (plotData: PlotFormData) => void;
+  // updatePlot: (name: string, plotData: PlotFormData) => void
+}
+
+export const usePlotsStore = create<PlotData & PlotAction>((set) => ({
+  plots: [],
+  removePlot: (name) => set((state) => ({
+    plots: state.plots.filter(plot => plot.name != name)
+  })),
+  addPlot: (plotData) => set((state) => {
+    state.plots.push(plotData)
+    return {plots: state.plots}
+  }),
+}))

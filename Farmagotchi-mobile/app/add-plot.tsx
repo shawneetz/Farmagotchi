@@ -14,22 +14,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-
-// Types for our form data
-type PlotFormData = {
-  name: string;
-  location: string;
-  photoUri: string | null;
-  initialCosts: string;
-  initialProfits: string;
-  dailyTasks: string[];
-};
+import { PlotFormData } from 'lib/types';
+import { usePlotsStore } from 'lib/stores';
 
 const TOTAL_STEPS = 5;
 
 export default function AddPlotScreen() {
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(1);
+  const addPlot = usePlotsStore((state) => state.addPlot);
   const [formData, setFormData] = useState<PlotFormData>({
     name: '',
     location: '',
@@ -58,8 +51,7 @@ export default function AddPlotScreen() {
   };
 
   const handleSave = () => {
-    // Here you would dispatch to a central store
-    // e.g. addPlot(formData);
+    addPlot(formData);
     router.replace('/');
   };
 

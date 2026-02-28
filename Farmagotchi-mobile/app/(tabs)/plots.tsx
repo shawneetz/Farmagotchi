@@ -1,13 +1,15 @@
+import { usePlotsStore } from 'lib/stores';
 import { View, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PlotsScreen() {
   const insets = useSafeAreaInsets();
+  const plots = usePlotsStore((state) => state.plots);
   return (
-    <View
-      className="flex-1 items-center justify-center bg-morning-mist"
+    <SafeAreaView
+      className="flex-1  bg-morning-mist"
       style={{ paddingTop: insets.top }}>
-      <Text className="text-xl font-bold text-rich-soil-brown">Plots Flow</Text>
-    </View>
+      {plots.map(plot => <Text key={plot.name}>{plot.name}</Text>)}
+    </SafeAreaView>
   );
 }
