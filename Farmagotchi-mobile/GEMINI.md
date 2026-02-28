@@ -71,4 +71,5 @@ The project uses the Expo CLI for development.
 - **2026-02-28:** Added staggered `FadeInRight` animations to tasks in `app/(tabs)/tasks.tsx` using `react-native-reanimated` for a polished slide-in effect.
 - **2026-02-28:** Implemented staggered `FadeInRight` animations for the resource list in `app/add-resource.tsx` to ensure visual consistency with the Tasks screen.
 - **2026-02-28:** Refactored the Finance screen (`app/(tabs)/finance.tsx`) to use dynamic charts. Replaced the hardcoded SVG with a dynamic `PieChart` (semi-circle donut) from `react-native-gifted-charts` for income, and ensured the expenses bar and breakdown lists are sorted by cost with consistent color mapping.
+- **2026-02-28:** Updated the Plots screen UI (`app/(tabs)/plots.tsx`) and `PlotDisplay` component to match the Figma design. Implemented a gradient progress bar, updated typography to `GeistPixel`, and added staggered `FadeInRight` animations for the field cards.
 - **2026-02-28:** Cleaned up the `plans/` directory by removing 12 unnecessary feature-specific markdown files, keeping only core architectural documentation (`DESIGN.md`, `DATAMODEL.md`, `UserFlow.md`).
