@@ -7,20 +7,16 @@ import { PlotFormData } from 'lib/types';
 import { AnimatedPressable } from 'lib/utils';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-// Font.loadAsync
-// loadas
 export const PlotDisplay = ({ plot, happiness }: { plot: PlotFormData; happiness: number }) => {
   const [pressed, setPressed] = useState(false);
   const setName = usePlantStore((state) => state.setName);
   return (
     <AnimatedPressable
-      className="flex-row items-center gap-2 rounded-2xl border-2 p-3"
+      className="flex-row items-center gap-3 rounded-2xl border-2 bg-white p-3"
       style={{
         borderColor: pressed ? colors['primary-500'] : colors['neutral-200'],
-        backgroundColor: pressed ? colors['primary-100'] : 'transparent',
-        transitionProperty: ['borderColor', 'backgroundColor'],
-        transitionDuration: '.1s',
       }}
       onPress={() => {
         router.push('/');
@@ -30,29 +26,35 @@ export const PlotDisplay = ({ plot, happiness }: { plot: PlotFormData; happiness
         setName(plot.name);
       }}
       onPressOut={() => setPressed(false)}>
-      {plot.photoUri ? (
-        <Image
-          source={plot.photoUri}
-          style={{ width: 96, height: 96, borderRadius: 12 }}
-          contentFit="cover"
-        />
-      ) : (
-        <View className="h-24 w-24 items-center justify-center">
-          <MaterialCommunityIcons name="sprout" size={48} color="#9ca3af" />
-        </View>
-      )}
+      <View className="size-24 items-center justify-center rounded-xl border border-neutral-200">
+        {plot.photoUri ? (
+          <Image
+            source={plot.photoUri}
+            className="size-full rounded-xl"
+            contentFit="cover"
+          />
+        ) : (
+          <MaterialCommunityIcons name="sprout" size={48} color={colors['neutral-400']} />
+        )}
+      </View>
       <View className="flex-1 gap-2">
-        <Text className="font-geist text-xl">{plot.name}</Text>
+        <Text className="font-geist text-lg text-neutral-800">{plot.name}</Text>
         <View className="gap-1">
-          <View className="h-3 overflow-hidden rounded-lg bg-neutral-200">
-            <View
+          <View className="h-2 w-full overflow-hidden rounded-full bg-neutral-300">
+            <LinearGradient
+              colors={[colors['primary-500'], colors['primary-100']]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={{
                 width: `${happiness}%`,
                 height: '100%',
+                borderRadius: 19,
               }}
-              className="bg-primary-600"></View>
+            />
           </View>
-          <Text className="font-geist text-neutral-600">{computeMessage(happiness)}</Text>
+          <Text className="font-geist text-base text-neutral-500">
+            {computeMessage(happiness)}
+          </Text>
         </View>
       </View>
     </AnimatedPressable>

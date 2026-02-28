@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Redirect, usePathname, useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
