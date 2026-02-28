@@ -22,10 +22,12 @@ export const PlotDisplay = ({ plot, happiness }: { plot: PlotFormData; happiness
         transitionProperty: ['borderColor', 'backgroundColor'],
         transitionDuration: '.1s',
       }}
+      onPress={() => {
+        router.push('/');
+      }}
       onPressIn={() => {
         setPressed(true);
         setName(plot.name);
-        router.push('/');
       }}
       onPressOut={() => setPressed(false)}>
       {plot.photoUri ? (
@@ -40,18 +42,18 @@ export const PlotDisplay = ({ plot, happiness }: { plot: PlotFormData; happiness
         </View>
       )}
       <View className="flex-1 gap-2">
-        <Text className="font-geist text-lg">{plot.name}</Text>
-        <View className="h-3 bg-neutral-200">
-          <View
-            style={{
-              width: `${happiness}%`,
-              height: '100%',
-            }}
-            className="bg-primary-600"></View>
+        <Text className="font-geist text-xl">{plot.name}</Text>
+        <View className="gap-1">
+          <View className="h-3 overflow-hidden rounded-lg bg-neutral-200">
+            <View
+              style={{
+                width: `${happiness}%`,
+                height: '100%',
+              }}
+              className="bg-primary-600"></View>
+          </View>
+          <Text className="font-geist text-neutral-600">{computeMessage(happiness)}</Text>
         </View>
-        <Text style={{
-          fontFamily: "GeistPixel"
-        }}>{computeMessage(happiness)}</Text>
       </View>
     </AnimatedPressable>
   );

@@ -363,7 +363,7 @@ export const usePlotsStore = create<PlotData & PlotAction>((set) => ({
     plots: state.plots.filter(plot => plot.name != name)
   })),
   addPlot: (plotData) => set((state) => {
-    state.plots.push({happiness: 50, ...plotData})
+    state.plots.push({happiness: Math.floor(Math.random() *100), ...plotData})
     return {plots: state.plots}
   }),
 }))
