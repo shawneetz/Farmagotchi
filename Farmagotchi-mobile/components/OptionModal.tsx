@@ -1,7 +1,9 @@
 import React from 'react';
 import { Modal, View, Text, Pressable } from 'react-native';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path, G } from 'react-native-svg';
+import { router } from 'expo-router';
 
 const SproutIcon = ({ width = 115, height = 115 }) => (
   <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
@@ -36,11 +38,14 @@ export default function OptionModal({
   onClose: () => void;
 }) {
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View className="absolute inset-0">
         <Pressable className="absolute inset-0 bg-neutral-900/20" onPress={onClose} />
 
-        <View className="absolute bottom-0 w-full items-center rounded-t-[36px] bg-neutral-100 px-4 pb-[21px] pt-2 shadow-[0px_0px_18.6px_0px_#bcbec8]">
+        <Animated.View
+          entering={SlideInDown.duration(300)}
+          exiting={SlideOutDown.duration(300)}
+          className="absolute bottom-0 w-full items-center rounded-t-[36px] bg-neutral-100 px-4 pb-[21px] pt-2 shadow-[0px_0px_18.6px_0px_#bcbec8]">
           <Pressable
             className="mb-[10px] items-center justify-center rounded-2xl bg-neutral-200 px-3 py-1"
             onPress={onClose}>
@@ -49,7 +54,12 @@ export default function OptionModal({
 
           <View className="w-full max-w-[380px] flex-row gap-2 self-center">
             {/* Left Button */}
-            <Pressable className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-400 p-4">
+            <Pressable
+              className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-400 p-4"
+              onPress={() => {
+                onClose();
+                setTimeout(() => router.push('/add-plot'), 300);
+              }}>
               <View className="absolute left-[-22px] top-[-6px] opacity-20">
                 <SproutIcon />
               </View>
@@ -57,14 +67,19 @@ export default function OptionModal({
             </Pressable>
 
             {/* Right Button */}
-            <Pressable className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-100 p-4">
+            <Pressable
+              className="h-[103px] flex-1 justify-end overflow-hidden rounded-[19px] bg-primary-100 p-4"
+              onPress={() => {
+                onClose();
+                setTimeout(() => router.push('/add-resource'), 300);
+              }}>
               <View className="absolute left-[83px] top-[-2px]">
                 <SackIcon />
               </View>
               <Text className="font-geist text-[14px] text-primary-900">New Resource</Text>
             </Pressable>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

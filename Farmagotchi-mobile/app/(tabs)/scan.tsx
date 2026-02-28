@@ -1,14 +1,16 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState, useRef } from 'react';
+import { useScanStore } from '../../lib/stores';
 
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState(false);
   const cameraRef = useRef<CameraView>(null);
   const insets = useSafeAreaInsets();
+  const { isAnalyzing, setAnalyzing, addScan } = useScanStore();
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -32,13 +34,32 @@ export default function ScanScreen() {
   }
 
   const takePicture = async () => {
-    if (cameraRef.current) {
+    if (cameraRef.current && !isAnalyzing) {
       try {
+        setAnalyzing(true);
         const photo = await cameraRef.current.takePictureAsync();
         console.log('Photo taken:', photo?.uri);
-        // Additional logic for handling the photo can be added here
+
+        // Simulate AI Analysis delay
+        setTimeout(() => {
+          const mockScan = {
+            plotId: '1', // Default plot for now
+            imageUrl: photo?.uri || '',
+            healthScore: Math.floor(Math.random() * 40) + 60, // 60-100
+            anomalies: Math.random() > 0.7 ? ['Minor leaf spotting', 'Nitrient deficiency'] : [],
+            tips: [
+              'Maintain consistent watering schedule',
+              'Check for pests under leaves',
+              'Optimal sunlight exposure detected',
+            ],
+            happinessImpact: Math.floor(Math.random() * 10) + 5,
+          };
+          addScan(mockScan);
+          setAnalyzing(false);
+        }, 2000);
       } catch (error) {
         console.error('Failed to take picture:', error);
+        setAnalyzing(false);
       }
     }
   };
@@ -70,6 +91,12 @@ export default function ScanScreen() {
                 className="overflow-hidden rounded-full border-2 border-primary-600"
                 style={{ width: 275, height: 275 }}>
                 <CameraView ref={cameraRef} style={{ flex: 1 }} enableTorch={torch} facing="back" />
+                {isAnalyzing && (
+                  <View className="absolute inset-0 items-center justify-center bg-black/50">
+                    <ActivityIndicator size="large" color="#8EDA1E" />
+                    <Text className="mt-2 font-geist text-white">Analyzing...</Text>
+                  </View>
+                )}
               </View>
             </View>
           </View>
