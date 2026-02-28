@@ -18,7 +18,7 @@ export const MenuItem = (props: {children:JSX.Element, href: string}) => {
     transitionDuration: ".1s"
   }}
   onPressIn={() => setPressed(true)}
-  onPressOut={() => {setPressed(false); router.navigate(props.href)}}
+  onPressOut={() => {setPressed(false); router.replace(props.href);}}
   >
     {props.children}
   </AnimatedPressable>

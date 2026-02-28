@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 type ModalState = {
   visible: boolean;
+  type: "option" | "field" | "resource"
 };
 
 type ModalAction = {
@@ -11,6 +12,7 @@ type ModalAction = {
 
 export const useModal = create<ModalState & ModalAction>((set) => ({
   visible: false,
+  type: "option",
   open: () => set(() => ({visible: true})),
   close: () => set(() => ({visible: false}))
 }));
