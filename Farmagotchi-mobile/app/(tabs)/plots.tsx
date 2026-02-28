@@ -30,7 +30,7 @@ export default function PlotsScreen() {
           <Text className='font-geist text-3xl'>Your Plot Fields</Text>
           <View className='pt-2'>
             {plots.map((plot) => (
-              <PlotDisplay plot={plot} key={plot.name} />
+              <PlotDisplay plot={plot} happiness={plot.happiness} key={plot.name} />
             ))}
           </View>
         </ScrollView>

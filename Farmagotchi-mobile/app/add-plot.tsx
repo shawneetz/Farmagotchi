@@ -126,15 +126,17 @@ export default function AddPlotScreen() {
   );
 
   const renderStep3 = () => (
-    <View className="flex-1 justify-center">
-      <Text className="mb-2 font-geist text-2xl text-neutral-900">Add a photo of your crop</Text>
-      <Text className="mb-6 font-geist text-base text-neutral-500">
-        We&apos;ll use this to track its growth and analyze its health later.
-      </Text>
+    <View className="flex-1 justify-center items-center">
+      <View>
+        <Text className="mb-2 font-geist text-2xl text-neutral-900">Add a photo of your crop</Text>
+        <Text className="mb-6 font-geist text-base text-neutral-500">
+          We&apos;ll use this to track its growth and analyze its health later.
+        </Text>
+      </View>
 
       <Pressable
         onPress={pickImage}
-        className="h-[200px] items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm">
+        className="items-center h-[200px] w-[200px] justify-center overflow-hidden rounded-xl bg-white shadow-sm">
         {formData.photoUri ? (
           <Image
             source={{ uri: formData.photoUri }}
@@ -231,7 +233,7 @@ export default function AddPlotScreen() {
       <SafeAreaView className="flex-1 px-4 py-6">
         {/* Header / Progress */}
         <View className="mb-8 mt-4 flex-row items-center">
-          {router.canGoBack() ? (
+          {router.canGoBack() || step > 1 ? (
             <Pressable
               onPress={handleBack}
               className="mr-4 h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">

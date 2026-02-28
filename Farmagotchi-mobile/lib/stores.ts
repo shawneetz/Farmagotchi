@@ -348,7 +348,9 @@ export const usePlantStore = create<PlantState & PlantAction>((set) => ({
 }));
 
 
-type PlotData = {plots: PlotFormData[]};
+type PlotData = {plots: (PlotFormData & {
+  happiness: number
+})[]};
 type PlotAction = {
   removePlot: (name: string) => void;
   addPlot: (plotData: PlotFormData) => void;
@@ -361,7 +363,7 @@ export const usePlotsStore = create<PlotData & PlotAction>((set) => ({
     plots: state.plots.filter(plot => plot.name != name)
   })),
   addPlot: (plotData) => set((state) => {
-    state.plots.push(plotData)
+    state.plots.push({happiness: 50, ...plotData})
     return {plots: state.plots}
   }),
 }))

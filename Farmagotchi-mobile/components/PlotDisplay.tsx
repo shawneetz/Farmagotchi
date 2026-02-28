@@ -8,21 +8,26 @@ import { AnimatedPressable } from 'lib/utils';
 import { useState } from 'react';
 import { View, Text } from 'react-native';
 
-export const PlotDisplay = ({ plot }: { plot: PlotFormData }) => {
+// Font.loadAsync
+// loadas
+export const PlotDisplay = ({ plot, happiness }: { plot: PlotFormData; happiness: number }) => {
   const [pressed, setPressed] = useState(false);
-  const setName = usePlantStore(state => state.setName)
+  const setName = usePlantStore((state) => state.setName);
   return (
     <AnimatedPressable
       className="flex-row items-center gap-2 rounded-2xl border-2 p-3"
       style={{
         borderColor: pressed ? colors['primary-500'] : colors['neutral-200'],
-        backgroundColor: pressed ? colors['primary-100'] : "transparent",
-        transitionProperty: ["borderColor", "backgroundColor"],
-        transitionDuration: ".1s"
+        backgroundColor: pressed ? colors['primary-100'] : 'transparent',
+        transitionProperty: ['borderColor', 'backgroundColor'],
+        transitionDuration: '.1s',
       }}
-      onPressIn={() => {setPressed(true); setName(plot.name); router.push("/")}}
-      onPressOut={() => setPressed(false)}
-      >
+      onPressIn={() => {
+        setPressed(true);
+        setName(plot.name);
+        router.push('/');
+      }}
+      onPressOut={() => setPressed(false)}>
       {plot.photoUri ? (
         <Image
           source={plot.photoUri}
@@ -34,10 +39,31 @@ export const PlotDisplay = ({ plot }: { plot: PlotFormData }) => {
           <MaterialCommunityIcons name="sprout" size={48} color="#9ca3af" />
         </View>
       )}
-      <View className="gap-2">
+      <View className="flex-1 gap-2">
         <Text className="font-geist text-lg">{plot.name}</Text>
-        <View className="gap-1"></View>
+        <View className="h-3 bg-neutral-200">
+          <View
+            style={{
+              width: `${happiness}%`,
+              height: '100%',
+            }}
+            className="bg-primary-600"></View>
+        </View>
+        <Text style={{
+          fontFamily: "GeistPixel"
+        }}>{computeMessage(happiness)}</Text>
       </View>
     </AnimatedPressable>
   );
 };
+
+function computeMessage(percentage: number): string {
+  if (percentage >= 70) {
+    return 'Looking Good';
+  } else if (percentage >= 50) {
+    return 'Nothing of concern';
+  } else if (percentage >= 20) {
+    return 'Needs Attention';
+  }
+  return 'Neglected';
+}
