@@ -1,14 +1,12 @@
 """
-    This file contains the data models to structure the data in the database
-    matching the rows in the supabase [postgres] database used in this project.
+    This file contains the data models to structure the data in the dataBase
+    matching the rows in the supaBase [postgres] dataBase used in this project.
 """
-
+from sqlalchemy import Float, String, Integer, DateTime, Boolean, Text, Numeric, ForeignKey, Enum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Column, Float, String, Integer, DateTime, Boolean, Text, Numeric, ForeignKey, Enum
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.sql import func
 from uuid import uuid4
-from typing import Optional
 from datetime import datetime
 import enum
 
@@ -18,13 +16,13 @@ class Base(DeclarativeBase):
 
 class TimestampMixin:
     """Reusable timestamp mixin."""
-    createdAT: Mapped[datetime] = mapped_column(
+    createdAt: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False
     )
 
-    updatedAT: Mapped[datetime] = mapped_column(
+    updatedAt: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
@@ -49,9 +47,10 @@ class User(UUIDMixin, TimestampMixin, Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
 
-    latitude: Mapped[float] = mapped_column(Float, nullable=False)
-    longitude: Mapped[float] = mapped_column(Float, nullable=False)
-    city: Mapped[str | None] = mapped_column(String(255))
+    # latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    # longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    # city: Mapped[str | None] = mapped_column(String(255))
+    location: Mapped[dict] = mapped_column(JSON, nullable=False)
 
     plots = relationship("Plot", back_populates="user", cascade="all, delete-orphan")
 
@@ -110,8 +109,9 @@ class Farmagotchi(UUIDMixin, TimestampMixin, Base):
     happiness: Mapped[int] = mapped_column(Integer, default=50)
 
     EvolutionStage: Mapped[EvolutionStageEnum] = mapped_column(
-        Enum(EvolutionStageEnum()),
-        default=EvolutionStageEnum().EGG
+        Enum(EvolutionStageEnum),
+        default=EvolutionStageEnum.EGG,
+        nullable=False
     )
 
     plot = relationship("Plot", back_populates="farmagotchi")
@@ -170,8 +170,8 @@ class Scan(UUIDMixin, Base):
     imageUrl: Mapped[str] = mapped_column(String, nullable=False)
     healthScore: Mapped[int] = mapped_column(Integer)
 
-    anomalies: Mapped[list[str]] = mapped_column(JSONB)
-    tips: Mapped[list[str]] = mapped_column(JSONB)
+    anomalies: Mapped[list[str]] = mapped_column(JSON)
+    tips: Mapped[list[str]] = mapped_column(JSON)
 
     happinessImpact: Mapped[int] = mapped_column(Integer)
 
@@ -232,7 +232,7 @@ class ChatMessage(UUIDMixin, Base):
     sender: Mapped[MessageSender] = mapped_column(Enum(MessageSender))
     content: Mapped[str] = mapped_column(String, nullable=False)
 
-    contextSnapshot: Mapped[dict | None] = mapped_column(JSONB)
+    contextSnapshot: Mapped[dict | None] = mapped_column(JSON)
 
     createdAt: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
