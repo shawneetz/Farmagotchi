@@ -106,7 +106,7 @@ export default function InsightsModal() {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={close}>
       <View className="absolute inset-0" style={{
-        bottom: bottomInset
+        paddingBottom: bottomInset
       }}>
         <Pressable className="absolute inset-0 bg-neutral-900/40" onPress={close} />
 

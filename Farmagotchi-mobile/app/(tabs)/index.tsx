@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import { Redirect, usePathname, useRouter } from 'expo-router';
 import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { Image } from 'expo-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
@@ -21,12 +21,17 @@ import {
   useWeatherStore,
   useScanStore,
   usePlantStore,
+  usePlotsStore,
 } from '../../lib/stores';
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export default function DashboardScreen() {
-  const insets = useSafeAreaInsets();
+  const plots = usePlotsStore(state => state.plots);
+  return plots.length === 0 ? <Redirect href={"/add-plot"} /> :  <MainEntry />
+}
+
+export function MainEntry() {
   const router = useRouter();
 
   const tasks = useTaskStore((state) => state.tasks);
@@ -174,13 +179,14 @@ export default function DashboardScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
+    <SafeAreaView className="flex-1 bg-[#f9fafa]">
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}>
         <Animated.View style={[fadeStyle, { flex: 1 }]}>
           <View className="px-4">
+
             {/* Plant Happiness Bar */}
             <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
               <MaterialCommunityIcons name="emoticon-sad-outline" size={18} color="#7c7a65" />
@@ -278,23 +284,28 @@ export default function DashboardScreen() {
                     style={{ width: '100%', height: '100%' }}
                     contentFit="contain"
                   />
+                  <View className="absolute bottom-0 left-1/2 rounded-lg  border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm" style={{
+                    transform: "translate(-50%, 0)"
+                  }}>
+                    <Text className="font-geist text-base font-medium text-white">
+                      {plant.name}
+                    </Text>
+                  </View>
                 </View>
               </Animated.View>
-              <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
-                <Text className="font-geist text-base font-medium text-white">{plant.name}</Text>
-              </View>
             </Pressable>
           </View>
 
           {/* Bottom Container */}
           <View
-            className="mt-24 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
+            className="absolute bottom-0 mt-24 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
             style={{
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 10 },
               shadowOpacity: 0.58,
               shadowRadius: 10,
               elevation: 9,
+              paddingBottom: 70,
             }}>
             {/* Widgets Container */}
             <View className="gap-4">
@@ -364,7 +375,7 @@ export default function DashboardScreen() {
                       editable={false}
                       underlineColorAndroid="transparent"
                       animatedProps={profitAnimatedProps}
-                      className={`font-geist text-[20px] font-bold ${isProfitPositive ? 'text-[#454b32]' : 'text-[#C85A5A]'}`}
+                      className="font-geist text-[20px]"
                     />
                   </View>
                 </View>
@@ -376,7 +387,7 @@ export default function DashboardScreen() {
                     <Text className="font-geist text-[10px] font-medium text-[#7c7a65]">
                       {weather.location}
                     </Text>
-                    <Text className="font-geist text-sm font-bold text-[#575647]">
+                    <Text className="font-geist text-sm">
                       {weather.lowTemp}°C/{weather.highTemp}°C
                     </Text>
                   </View>
@@ -398,7 +409,7 @@ export default function DashboardScreen() {
                     <Feather name="camera" size={20} color="#71ac17" />
                   </View>
                   <View>
-                    <Text className="font-geist text-sm font-bold text-[#28292f]">
+                    <Text className="font-geist text-sm text-[#28292f]">
                       {latestScan ? 'Latest Scan Result' : 'No Scan Data'}
                     </Text>
                     <Text className="font-geist text-xs text-neutral-500">
@@ -419,6 +430,6 @@ export default function DashboardScreen() {
           </View>
         </Animated.View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

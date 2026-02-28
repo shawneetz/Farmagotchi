@@ -335,14 +335,15 @@ type PlantAction = {
 };
 
 export const usePlantStore = create<PlantState & PlantAction>((set) => ({
-  name: 'Mango tree',
-  happiness: 70.68,
+  name: '',
+  happiness: 0,
   petImage: 'tree.png',
   updateHappiness: (amount) =>
     set((state) => ({
       happiness: Math.min(100, Math.max(0, state.happiness + amount)),
     })),
   setName: (name) => set({ name }),
+  // updatePlant: (name)
   setPetImage: (image) => set({ petImage: image }),
 }));
 

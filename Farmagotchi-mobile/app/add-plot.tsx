@@ -9,13 +9,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PlotFormData } from 'lib/types';
-import { usePlotsStore } from 'lib/stores';
+import { usePlantStore, usePlotsStore } from 'lib/stores';
 
 const TOTAL_STEPS = 5;
 
@@ -23,6 +23,7 @@ export default function AddPlotScreen() {
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(1);
   const addPlot = usePlotsStore((state) => state.addPlot);
+  const setName = usePlantStore((state) => state.setName);
   const [formData, setFormData] = useState<PlotFormData>({
     name: '',
     location: '',
@@ -52,6 +53,7 @@ export default function AddPlotScreen() {
 
   const handleSave = () => {
     addPlot(formData);
+    setName(formData.name);
     router.replace('/');
   };
 
@@ -59,7 +61,7 @@ export default function AddPlotScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -226,24 +228,24 @@ export default function AddPlotScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-neutral-100">
-      <View
-        className="flex-1 px-4"
-        style={{
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 20,
-        }}>
+      <SafeAreaView className="flex-1 px-4 py-6">
         {/* Header / Progress */}
-        <View className="mb-8 flex-row items-center">
-          <Pressable
-            onPress={handleBack}
-            className="mr-4 h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
-            <MaterialCommunityIcons name="arrow-left" size={20} color="#1d1b20" />
-          </Pressable>
+        <View className="mb-8 mt-4 flex-row items-center">
+          {router.canGoBack() ? (
+            <Pressable
+              onPress={handleBack}
+              className="mr-4 h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
+              <MaterialCommunityIcons name="arrow-left" size={20} color="#1d1b20" />
+            </Pressable>
+          ) : (
+            <></>
+          )}
+
           <View className="flex-1 flex-row gap-2">
             {[...Array(TOTAL_STEPS)].map((_, i) => (
               <View
                 key={i}
-                className={`h-2 flex-1 rounded-full ${step >= i + 1 ? 'bg-primary-400' : 'bg-neutral-200'}`}
+                className={`h-3 flex-1 rounded-full ${step >= i + 1 ? 'bg-primary-400' : 'bg-neutral-200'}`}
               />
             ))}
           </View>
@@ -285,7 +287,7 @@ export default function AddPlotScreen() {
             </LinearGradient>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
