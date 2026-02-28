@@ -34,12 +34,8 @@ export default function FinanceScreen() {
   const router = useRouter();
   const transactions = useFinanceStore((state) => state.transactions);
 
-  const incomes = transactions
-    .filter((t) => t.type === 'income')
-    .sort((a, b) => b.cost - a.cost);
-  const expenses = transactions
-    .filter((t) => t.type === 'expense')
-    .sort((a, b) => b.cost - a.cost);
+  const incomes = transactions.filter((t) => t.type === 'income').sort((a, b) => b.cost - a.cost);
+  const expenses = transactions.filter((t) => t.type === 'expense').sort((a, b) => b.cost - a.cost);
 
   const totalIncome = incomes.reduce((acc, curr) => acc + curr.cost, 0);
   const totalExpenses = expenses.reduce((acc, curr) => acc + curr.cost, 0);
@@ -127,7 +123,7 @@ export default function FinanceScreen() {
         </View>
 
         {/* Income Arc Section */}
-        <View className="mb-2 mt-8 items-center justify-center overflow-hidden h-[150px]">
+        <View className="mb-2 mt-8 h-[150px] items-center justify-center overflow-hidden">
           <PieChart
             donut
             semiCircle
@@ -136,7 +132,7 @@ export default function FinanceScreen() {
             innerRadius={80}
             backgroundColor="#F9FAFA"
             centerLabelComponent={() => (
-              <View className="items-center justify-center -mt-6">
+              <View className="-mt-6 items-center justify-center">
                 <Text className="font-['GeistPixel'] text-[26px] text-black">₱{totalIncome}</Text>
                 <Text className="-mt-1 font-['GeistPixel'] text-[14px] text-[#979AAA]">
                   Total Income
@@ -151,7 +147,9 @@ export default function FinanceScreen() {
 
         <View className="mb-4 flex-row items-end justify-between">
           <Text className="font-['GeistPixel'] text-[22px] text-[#1D1E20]">Expenses</Text>
-          <Text className="font-['GeistPixel'] text-[18px] text-[#7B7F8E] pb-0.5">₱{totalExpenses}</Text>
+          <Text className="pb-0.5 font-['GeistPixel'] text-[18px] text-[#7B7F8E]">
+            ₱{totalExpenses}
+          </Text>
         </View>
 
         {/* Expenses Bar */}
@@ -163,4 +161,3 @@ export default function FinanceScreen() {
     </View>
   );
 }
-
