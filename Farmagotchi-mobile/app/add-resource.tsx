@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFinanceStore, TransactionType, Transaction } from 'lib/stores';
 import { Feather } from '@expo/vector-icons';
+import Animated, { FadeInRight } from 'react-native-reanimated';
 
 export default function AddResourceScreen() {
   const insets = useSafeAreaInsets();
@@ -215,9 +216,10 @@ export default function AddResourceScreen() {
             <Text className="font-geist text-[14px] text-neutral-400">No resources found.</Text>
           </View>
         ) : (
-          transactions.map((t) => (
-            <View
+          transactions.map((t, index) => (
+            <Animated.View
               key={t.id}
+              entering={FadeInRight.delay(index * 100).duration(400)}
               className="mb-3 flex-row items-center justify-between rounded-xl border border-neutral-100 bg-white p-4 shadow-sm">
               <View className="flex-1 pr-4">
                 <Text
@@ -238,7 +240,7 @@ export default function AddResourceScreen() {
                   <Feather name="trash-2" size={18} color="#C85A5A" />
                 </Pressable>
               </View>
-            </View>
+            </Animated.View>
           ))
         )}
       </ScrollView>
