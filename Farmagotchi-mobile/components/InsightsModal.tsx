@@ -12,8 +12,10 @@ import {
   useScanStore,
   usePlantStore,
 } from '../lib/stores';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function InsightsModal() {
+  const {bottom: bottomInset} = useSafeAreaInsets();
   const router = useRouter();
   const visible = useInsightsModal((state) => state.visible);
   const close = useInsightsModal((state) => state.close);
@@ -103,7 +105,9 @@ export default function InsightsModal() {
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={close}>
-      <View className="absolute inset-0">
+      <View className="absolute inset-0" style={{
+        bottom: bottomInset
+      }}>
         <Pressable className="absolute inset-0 bg-neutral-900/40" onPress={close} />
 
         <Animated.View

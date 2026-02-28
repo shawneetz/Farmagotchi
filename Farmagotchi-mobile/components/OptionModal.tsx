@@ -4,6 +4,7 @@ import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Svg, { Path, G } from 'react-native-svg';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SproutIcon = ({ width = 115, height = 115 }) => (
   <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
@@ -37,6 +38,7 @@ export default function OptionModal({
   visible: boolean;
   onClose: () => void;
 }) {
+  const {bottom: bottomInset} = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View className="absolute inset-0">
@@ -45,7 +47,9 @@ export default function OptionModal({
         <Animated.View
           entering={SlideInDown.duration(300)}
           exiting={SlideOutDown.duration(300)}
-          className="absolute bottom-0 w-full items-center rounded-t-[36px] bg-neutral-100 px-4 pb-[21px] pt-2 shadow-[0px_0px_18.6px_0px_#bcbec8]">
+          className="absolute w-full items-center rounded-t-[36px] bg-neutral-100 px-4 pb-[21px] pt-2 shadow-[0px_0px_18.6px_0px_#bcbec8]" style={{
+            bottom: bottomInset
+          }}>
           <Pressable
             className="mb-[10px] items-center justify-center rounded-2xl bg-neutral-200 px-3 py-1"
             onPress={onClose}>
