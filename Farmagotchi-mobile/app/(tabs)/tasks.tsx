@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import Animated, { FadeInRight } from 'react-native-reanimated';
+import Animated, { FadeInRight, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useTaskStore, TaskCategory, Task } from '../../lib/stores';
 
 export default function TasksScreen() {
@@ -141,11 +141,14 @@ export default function TasksScreen() {
       </ScrollView>
 
       {/* Add/Edit Task Modal */}
-      <Modal visible={isModalVisible} transparent animationType="slide">
+      <Modal visible={isModalVisible} transparent animationType="fade">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 justify-end bg-black/50">
-          <View className="rounded-t-[32px] bg-white p-6 pb-12">
+          <Animated.View
+            entering={SlideInDown.duration(300)}
+            exiting={SlideOutDown.duration(300)}
+            className="rounded-t-[32px] bg-white p-6 pb-12">
             <View className="mb-6 flex-row items-center justify-between">
               <Text className="font-geist text-xl font-bold text-neutral-900">
                 {editingTaskId ? 'Edit Task' : 'New Task'}
@@ -199,7 +202,7 @@ export default function TasksScreen() {
                 Save Task
               </Text>
             </Pressable>
-          </View>
+          </Animated.View>
         </KeyboardAvoidingView>
       </Modal>
     </View>
