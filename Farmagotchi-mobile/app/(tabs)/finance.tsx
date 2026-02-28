@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PieChart } from 'react-native-gifted-charts';
 import { useFinanceStore } from 'lib/stores';
 import { useRouter } from 'expo-router';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const COLORS = ['#65F09F', '#27ABF1', '#23E5DB', '#B6EA67', '#F515B6'];
 
@@ -34,12 +35,8 @@ export default function FinanceScreen() {
   const router = useRouter();
   const transactions = useFinanceStore((state) => state.transactions);
 
-  const incomes = transactions
-    .filter((t) => t.type === 'income')
-    .sort((a, b) => b.cost - a.cost);
-  const expenses = transactions
-    .filter((t) => t.type === 'expense')
-    .sort((a, b) => b.cost - a.cost);
+  const incomes = transactions.filter((t) => t.type === 'income').sort((a, b) => b.cost - a.cost);
+  const expenses = transactions.filter((t) => t.type === 'expense').sort((a, b) => b.cost - a.cost);
 
   const totalIncome = incomes.reduce((acc, curr) => acc + curr.cost, 0);
   const totalExpenses = expenses.reduce((acc, curr) => acc + curr.cost, 0);
@@ -49,12 +46,14 @@ export default function FinanceScreen() {
     color: COLORS[index % COLORS.length],
   }));
 
-  const renderBreakdown = (items: typeof transactions, isExpense = false) => {
+  const renderBreakdown = (items: typeof transactions, index: number) => {
     if (items.length === 0) {
       return (
-        <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
+        <Animated.View
+          entering={FadeInDown.delay(200 + index * 100).duration(600)}
+          className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
           <Text className="font-['GeistPixel'] text-[13px] text-[#7B7F8E]">No items yet.</Text>
-        </View>
+        </Animated.View>
       );
     }
 
@@ -63,29 +62,31 @@ export default function FinanceScreen() {
     const right = items.slice(half);
 
     return (
-      <View className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
+      <Animated.View
+        entering={FadeInDown.delay(200 + index * 100).duration(600)}
+        className="elevation-4 mb-6 flex-row rounded-2xl bg-white p-4 shadow-sm shadow-[#E0E1E6]">
         <View className="flex-1 pr-3">
-          {left.map((item, index) => (
+          {left.map((item, idx) => (
             <BreakdownItem
               key={item.id}
               label={item.name}
               value={`₱${item.cost}`}
-              color={COLORS[index % COLORS.length]}
+              color={COLORS[idx % COLORS.length]}
             />
           ))}
         </View>
         <View className="my-1 w-[1px] bg-[#E0E1E6]" />
         <View className="flex-1 pl-3">
-          {right.map((item, index) => (
+          {right.map((item, idx) => (
             <BreakdownItem
               key={item.id}
               label={item.name}
               value={`₱${item.cost}`}
-              color={COLORS[(index + half) % COLORS.length]}
+              color={COLORS[(idx + half) % COLORS.length]}
             />
           ))}
         </View>
-      </View>
+      </Animated.View>
     );
   };
 
@@ -94,7 +95,9 @@ export default function FinanceScreen() {
     if (expenses.length === 0 || totalExpenses === 0) return null;
 
     return (
-      <View className="mb-6 h-7 w-full flex-row">
+      <Animated.View
+        entering={FadeInDown.delay(500).duration(600)}
+        className="mb-6 h-7 w-full flex-row">
         {expenses.map((expense, index) => (
           <View
             key={expense.id}
@@ -106,7 +109,7 @@ export default function FinanceScreen() {
             }}
           />
         ))}
-      </View>
+      </Animated.View>
     );
   };
 
@@ -115,19 +118,21 @@ export default function FinanceScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140, paddingHorizontal: 20 }}>
-        <View className="mb-2 mt-8 flex-row items-center justify-between">
-          <Text className="font-['GeistPixel'] text-[16px] text-[#1D1E20]">
-            Projected Income this month
-          </Text>
+        <Animated.View
+          entering={FadeInDown.delay(100).duration(600)}
+          className="mb-2 mt-8 flex-row items-center justify-between">
+          <Text className="font-['GeistPixel'] text-[16px] text-[#1D1E20]">Projected Income</Text>
           <Pressable
             onPress={() => router.push('/add-resource')}
             className="rounded-lg bg-neutral-200 px-3 py-1.5">
             <Text className="font-['GeistPixel'] text-[12px] text-neutral-700">Manage</Text>
           </Pressable>
-        </View>
+        </Animated.View>
 
         {/* Income Arc Section */}
-        <View className="mb-2 mt-8 items-center justify-center overflow-hidden h-[150px]">
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(800)}
+          className="mb-2 mt-8 h-[150px] items-center justify-center overflow-hidden">
           <PieChart
             donut
             semiCircle
@@ -136,7 +141,7 @@ export default function FinanceScreen() {
             innerRadius={80}
             backgroundColor="#F9FAFA"
             centerLabelComponent={() => (
-              <View className="items-center justify-center -mt-6">
+              <View className="-mt-6 items-center justify-center">
                 <Text className="font-['GeistPixel'] text-[26px] text-black">₱{totalIncome}</Text>
                 <Text className="-mt-1 font-['GeistPixel'] text-[14px] text-[#979AAA]">
                   Total Income
@@ -144,23 +149,26 @@ export default function FinanceScreen() {
               </View>
             )}
           />
-        </View>
+        </Animated.View>
 
         {/* Income Breakdown Card */}
-        {renderBreakdown(incomes)}
+        {renderBreakdown(incomes, 1)}
 
-        <View className="mb-4 flex-row items-end justify-between">
+        <Animated.View
+          entering={FadeInDown.delay(400).duration(600)}
+          className="mb-4 flex-row items-end justify-between">
           <Text className="font-['GeistPixel'] text-[22px] text-[#1D1E20]">Expenses</Text>
-          <Text className="font-['GeistPixel'] text-[18px] text-[#7B7F8E] pb-0.5">₱{totalExpenses}</Text>
-        </View>
+          <Text className="pb-0.5 font-['GeistPixel'] text-[18px] text-[#7B7F8E]">
+            ₱{totalExpenses}
+          </Text>
+        </Animated.View>
 
         {/* Expenses Bar */}
         {renderExpenseBar()}
 
         {/* Expenses Breakdown Card */}
-        {renderBreakdown(expenses, true)}
+        {renderBreakdown(expenses, 2)}
       </ScrollView>
     </View>
   );
 }
-

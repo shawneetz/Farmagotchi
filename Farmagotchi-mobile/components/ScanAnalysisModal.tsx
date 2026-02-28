@@ -21,11 +21,7 @@ export default function ScanAnalysisModal() {
   const status = getHealthStatus(recentScan.healthScore);
 
   return (
-    <Modal
-      visible={!!recentScan}
-      transparent
-      animationType="fade"
-      onRequestClose={clearRecentScan}>
+    <Modal visible={!!recentScan} transparent animationType="fade" onRequestClose={clearRecentScan}>
       <View className="absolute inset-0">
         <Pressable className="absolute inset-0 bg-neutral-900/40" onPress={clearRecentScan} />
 
