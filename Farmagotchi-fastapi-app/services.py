@@ -1,12 +1,19 @@
-# from sqlalchemy.orm import Session
-# from schemas import RoleResponse, UserCreate
-# from crud import UserCrud
+"""
+    This file contains the business logic and the error/exception handling 
+    """
 
-# class UserService:
 
-#     @staticmethod
-#     def createRole(database:Session, newRole: RoleResponse):
-#         role = UserCrud.getUser(database,newRole)
-#         if not user:
-#             raise ValueError("user not found.")
-#         return role
+from sqlalchemy.ext.asyncio import AsyncSession
+from schemas import UserResponse
+from crud import UserCrud
+
+class UserService:
+    
+    def __init__(self, database: AsyncSession):
+        self.crud = UserCrud(database)
+
+    async def searchUser(self, userEmail: str):
+        user = await self.crud.searchbyEmail(userEmail)
+        if not user:
+            raise ValueError("Sorry, user not found.")
+        return user 

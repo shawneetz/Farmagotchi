@@ -4,13 +4,13 @@
 """
 
 
-from pydantic import BaseModel, ConfigDict, Field, EmailStr, List, field_validator
+from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 from uuid import UUID
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, List
 
-from models import EvolutionStage, TaskFrequency, TransactionType, MessageSender
+from models import EvolutionStageEnum, TaskFrequency, TransactionType, MessageSender
 
 class LocationSchema(BaseModel):
     latitude: float = Field(..., ge=-90, le=90)
@@ -75,7 +75,7 @@ class FarmagotchiResponse(BaseModel):
     petType: str
     level: int
     happiness: int
-    evolutionStage: EvolutionStage
+    evolutionStage: EvolutionStageEnum
     createdAt: datetime
     updatedAt: datetime
 
