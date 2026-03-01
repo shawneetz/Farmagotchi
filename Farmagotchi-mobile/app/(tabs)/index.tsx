@@ -430,6 +430,6 @@ export function MainEntry() {
           </View>
         </Animated.View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
