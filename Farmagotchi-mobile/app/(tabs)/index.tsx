@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
@@ -33,6 +33,7 @@ export default function DashboardScreen() {
 
 export function MainEntry() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
@@ -179,7 +180,7 @@ export function MainEntry() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f9fafa]">
+    <View className="flex-1 bg-[#f9fafa]" style={{ paddingTop: insets.top, paddingBottom: 100 }}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ flexGrow: 1 }}
@@ -298,14 +299,13 @@ export function MainEntry() {
 
           {/* Bottom Container */}
           <View
-            className="absolute bottom-0 mt-24 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
+            className="mt-24 flex-1 rounded-t-[36px] bg-[#f9fafa] px-4 py-8"
             style={{
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 10 },
               shadowOpacity: 0.58,
               shadowRadius: 10,
               elevation: 9,
-              paddingBottom: 70,
             }}>
             {/* Widgets Container */}
             <View className="gap-4">
@@ -375,7 +375,7 @@ export function MainEntry() {
                       editable={false}
                       underlineColorAndroid="transparent"
                       animatedProps={profitAnimatedProps}
-                      className="font-geist text-[20px]"
+                      className={`font-geist text-[20px] font-bold ${isProfitPositive ? 'text-[#454b32]' : 'text-[#C85A5A]'}`}
                     />
                   </View>
                 </View>
@@ -387,7 +387,7 @@ export function MainEntry() {
                     <Text className="font-geist text-[10px] font-medium text-[#7c7a65]">
                       {weather.location}
                     </Text>
-                    <Text className="font-geist text-sm">
+                    <Text className="font-geist text-sm font-bold text-[#575647]">
                       {weather.lowTemp}°C/{weather.highTemp}°C
                     </Text>
                   </View>
@@ -409,7 +409,7 @@ export function MainEntry() {
                     <Feather name="camera" size={20} color="#71ac17" />
                   </View>
                   <View>
-                    <Text className="font-geist text-sm text-[#28292f]">
+                    <Text className="font-geist text-sm font-bold text-[#28292f]">
                       {latestScan ? 'Latest Scan Result' : 'No Scan Data'}
                     </Text>
                     <Text className="font-geist text-xs text-neutral-500">

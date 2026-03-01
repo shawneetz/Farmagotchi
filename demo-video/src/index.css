@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@font-face {
+  font-family: "Geist Pixel";
+  src: url("../public/GeistPixel-Square.ttf") format("truetype");
+}

@@ -38,33 +38,14 @@ export default function ChatScreen() {
     }
   }, [messages]);
 
-  const getStubResponse = () => {
-    const dailyTasks = tasks.filter((t) => t.category === 'daily');
-    const allTasksDone = dailyTasks.every((t) => t.isCompleted);
-    const netProfit = transactions.reduce(
-      (acc, curr) => (curr.type === 'income' ? acc + curr.cost : acc - curr.cost),
-      0
-    );
-
-    const responses = [
-      "I'm feeling great today! The soil moisture is perfect.",
-      `Thanks for chatting! I love being your ${plant.name}.`,
-      "Did you know Mangoes are known as the 'king of fruits'?",
-    ];
-
-    if (!allTasksDone) {
-      responses.push("I'm feeling a bit neglected. Have you checked my daily tasks yet?");
-    } else {
-      responses.push('I feel so well-cared for! Thanks for completing all my tasks.');
+  const getStubResponse = (userInput: string) => {
+    const query = userInput.toLowerCase();
+    
+    if (query.includes('current health') || query.includes('how long do you estimate')) {
+      return "Based on my current Happiness of " + plant.happiness + "% and the recent AI scan showing optimal soil moisture, I estimate I'll be ready for harvest in exactly 42 days. Your consistent care has accelerated my growth cycle by about 5 days!";
     }
 
-    if (netProfit > 10000) {
-      responses.push("We're doing so well financially! I'm proud of our progress.");
-    } else if (netProfit < 0) {
-      responses.push("Money is a bit tight lately, but I'll keep growing my best!");
-    }
-
-    return responses[Math.floor(Math.random() * responses.length)];
+    return 'Mangoes typically take 3 to 5 months to ripen after the tree has flowered. Depending on the variety, they are usually ready for harvest from March to June in most tropical regions!';
   };
 
   const handleSend = () => {
@@ -77,7 +58,7 @@ export default function ChatScreen() {
     // Trigger stub AI response
     setIsTyping(true);
     setTimeout(() => {
-      const response = getStubResponse();
+      const response = getStubResponse(userMessage);
       addMessage({ role: 'assistant', content: response });
       setIsTyping(false);
     }, 1500);
@@ -131,7 +112,7 @@ export default function ChatScreen() {
           </Pressable>
           <View>
             <Text className="font-geist text-lg font-bold text-[#28292f]">{plant.name}</Text>
-            <Text className="font-geist text-xs text-[#71ac17]">Online • Your Pet</Text>
+            <Text className="font-geist text-xs text-[#71ac17]">Online • Your Crops</Text>
           </View>
         </View>
         <Pressable

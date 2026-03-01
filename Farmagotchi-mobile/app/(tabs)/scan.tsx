@@ -1,52 +1,29 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useScanStore } from '../../lib/stores';
 
+const DEMO_IMAGE_URL =
+  'https://cdn.shopify.com/s/files/1/0039/6096/3118/files/hapus_tree_height.jpg?v=1739429208';
+
 export default function ScanScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState(false);
-  const cameraRef = useRef<CameraView>(null);
   const insets = useSafeAreaInsets();
   const { isAnalyzing, setAnalyzing, addScan } = useScanStore();
 
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
-
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View className="flex-1 items-center justify-center bg-neutral-100 p-4">
-        <Text className="mb-4 text-center text-neutral-900" style={{ fontFamily: 'GeistPixel' }}>
-          We need your permission to show the camera
-        </Text>
-        <TouchableOpacity
-          onPress={requestPermission}
-          className="rounded-xl bg-primary-600 px-6 py-3">
-          <Text className="font-bold text-white">Grant Permission</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   const takePicture = async () => {
-    if (cameraRef.current && !isAnalyzing) {
+    if (!isAnalyzing) {
       try {
         setAnalyzing(true);
-        const photo = await cameraRef.current.takePictureAsync();
-        console.log('Photo taken:', photo?.uri);
 
         // Simulate AI Analysis delay
         setTimeout(() => {
           const mockScan = {
             plotId: '1', // Default plot for now
-            imageUrl: photo?.uri || '',
+            imageUrl: DEMO_IMAGE_URL,
             healthScore: Math.floor(Math.random() * 40) + 60, // 60-100
-            anomalies: Math.random() > 0.7 ? ['Minor leaf spotting', 'Nitrient deficiency'] : [],
+            anomalies: Math.random() > 0.7 ? ['Minor leaf spotting', 'Nutrient deficiency'] : [],
             tips: [
               'Maintain consistent watering schedule',
               'Check for pests under leaves',
@@ -58,7 +35,7 @@ export default function ScanScreen() {
           setAnalyzing(false);
         }, 2000);
       } catch (error) {
-        console.error('Failed to take picture:', error);
+        console.error('Failed to process image:', error);
         setAnalyzing(false);
       }
     }
@@ -80,17 +57,22 @@ export default function ScanScreen() {
               AI CROP ANALYSIS
             </Text>
             <Text className="mt-1 text-center text-[14px] text-[#575647]">
-              Take a picture that visible in the frame
+              Take a picture of your crop close up for analysis.
             </Text>
           </View>
 
-          {/* Camera Frame Area */}
+          {/* Camera Frame Area (Demo Mode) */}
           <View className="w-full flex-1 items-center justify-center">
             <View className="rounded-full border-[11px] border-primary-100" style={{ padding: 11 }}>
               <View
                 className="overflow-hidden rounded-full border-2 border-primary-600"
                 style={{ width: 275, height: 275 }}>
-                <CameraView ref={cameraRef} style={{ flex: 1 }} enableTorch={torch} facing="back" />
+                <Image
+                  source={{ uri: DEMO_IMAGE_URL }}
+                  style={{ flex: 1 }}
+                  contentFit="cover"
+                  transition={1000}
+                />
                 {isAnalyzing && (
                   <View className="absolute inset-0 items-center justify-center bg-black/50">
                     <ActivityIndicator size="large" color="#8EDA1E" />
@@ -130,3 +112,4 @@ export default function ScanScreen() {
     </View>
   );
 }
+

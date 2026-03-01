@@ -121,14 +121,14 @@ const initialTasks: Task[] = [
     title: 'Water the mango tree',
     isCompleted: false,
     category: 'daily',
-    happinessReward: 10,
+    happinessReward: 2,
   },
   {
     id: '2',
     title: 'Check soil moisture',
     isCompleted: true,
     category: 'daily',
-    happinessReward: 5,
+    happinessReward: 2,
   },
   {
     id: '3',
