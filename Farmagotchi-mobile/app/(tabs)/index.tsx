@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
 import { Image } from 'expo-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, LinearGradient, Stop, Rect } from 'react-native-svg';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
@@ -21,13 +21,19 @@ import {
   useWeatherStore,
   useScanStore,
   usePlantStore,
+  usePlotsStore,
 } from '../../lib/stores';
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export default function DashboardScreen() {
-  const insets = useSafeAreaInsets();
+  const plots = usePlotsStore(state => state.plots);
+  return plots.length === 0 ? <Redirect href={"/add-plot"} /> :  <MainEntry />
+}
+
+export function MainEntry() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const tasks = useTaskStore((state) => state.tasks);
   const transactions = useFinanceStore((state) => state.transactions);
@@ -181,6 +187,7 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}>
         <Animated.View style={[fadeStyle, { flex: 1 }]}>
           <View className="px-4">
+
             {/* Plant Happiness Bar */}
             <View className="mx-auto mt-16 w-[200px] flex-row items-center justify-center gap-2">
               <MaterialCommunityIcons name="emoticon-sad-outline" size={18} color="#7c7a65" />
@@ -278,11 +285,15 @@ export default function DashboardScreen() {
                     style={{ width: '100%', height: '100%' }}
                     contentFit="contain"
                   />
+                  <View className="absolute bottom-0 left-1/2 rounded-lg  border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm" style={{
+                    transform: "translate(-50%, 0)"
+                  }}>
+                    <Text className="font-geist text-base font-medium text-white">
+                      {plant.name}
+                    </Text>
+                  </View>
                 </View>
               </Animated.View>
-              <View className="absolute -bottom-12 rounded-lg border border-black/20 bg-[rgba(40,41,47,0.8)] px-4 py-1.5 shadow-sm">
-                <Text className="font-geist text-base font-medium text-white">{plant.name}</Text>
-              </View>
             </Pressable>
           </View>
 

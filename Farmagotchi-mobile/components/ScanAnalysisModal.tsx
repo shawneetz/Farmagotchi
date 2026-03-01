@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, Pressable, ScrollView } from 'react-native';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useScanStore } from '../lib/stores';
@@ -20,15 +21,14 @@ export default function ScanAnalysisModal() {
   const status = getHealthStatus(recentScan.healthScore);
 
   return (
-    <Modal
-      visible={!!recentScan}
-      transparent
-      animationType="slide"
-      onRequestClose={clearRecentScan}>
+    <Modal visible={!!recentScan} transparent animationType="fade" onRequestClose={clearRecentScan}>
       <View className="absolute inset-0">
         <Pressable className="absolute inset-0 bg-neutral-900/40" onPress={clearRecentScan} />
 
-        <View className="absolute bottom-0 w-full rounded-t-[36px] bg-white px-6 pb-10 pt-4 shadow-2xl">
+        <Animated.View
+          entering={SlideInDown.duration(300)}
+          exiting={SlideOutDown.duration(300)}
+          className="absolute bottom-0 w-full rounded-t-[36px] bg-white px-6 pb-10 pt-4 shadow-2xl">
           {/* Handle/Close Bar */}
           <View className="mb-6 items-center">
             <View className="h-1.5 w-12 rounded-full bg-neutral-200" />
@@ -134,7 +134,7 @@ export default function ScanAnalysisModal() {
               Got it, thanks!
             </Text>
           </Pressable>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

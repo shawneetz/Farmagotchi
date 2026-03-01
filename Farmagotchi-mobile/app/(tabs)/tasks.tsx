@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
+import Animated, { FadeInRight, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useTaskStore, TaskCategory, Task } from '../../lib/stores';
 
 export default function TasksScreen() {
@@ -63,9 +64,10 @@ export default function TasksScreen() {
     closeModal();
   };
 
-  const renderTask = (task: Task) => (
-    <View
+  const renderTask = (task: Task, index: number) => (
+    <Animated.View
       key={task.id}
+      entering={FadeInRight.delay(index * 100).duration(400)}
       className="mb-3 flex-row items-center justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
       <Pressable
         onPress={() => toggleTaskCompletion(task.id)}
@@ -92,7 +94,7 @@ export default function TasksScreen() {
           <Feather name="trash-2" size={20} color="#C85A5A" />
         </Pressable>
       </View>
-    </View>
+    </Animated.View>
   );
 
   const renderCategory = (title: string, categoryTasks: Task[]) => {
@@ -102,7 +104,7 @@ export default function TasksScreen() {
         <View className="mb-3 self-start rounded-lg bg-primary-100 px-3 py-1">
           <Text className="font-geist text-sm text-primary-900">{title}</Text>
         </View>
-        {categoryTasks.map(renderTask)}
+        {categoryTasks.map((task, index) => renderTask(task, index))}
       </View>
     );
   };
@@ -139,11 +141,14 @@ export default function TasksScreen() {
       </ScrollView>
 
       {/* Add/Edit Task Modal */}
-      <Modal visible={isModalVisible} transparent animationType="slide">
+      <Modal visible={isModalVisible} transparent animationType="fade">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 justify-end bg-black/50">
-          <View className="rounded-t-[32px] bg-white p-6 pb-12">
+          <Animated.View
+            entering={SlideInDown.duration(300)}
+            exiting={SlideOutDown.duration(300)}
+            className="rounded-t-[32px] bg-white p-6 pb-12">
             <View className="mb-6 flex-row items-center justify-between">
               <Text className="font-geist text-xl font-bold text-neutral-900">
                 {editingTaskId ? 'Edit Task' : 'New Task'}
@@ -197,7 +202,7 @@ export default function TasksScreen() {
                 Save Task
               </Text>
             </Pressable>
-          </View>
+          </Animated.View>
         </KeyboardAvoidingView>
       </Modal>
     </View>

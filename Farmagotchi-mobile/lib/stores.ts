@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { PlotFormData } from './types';
 
 type ModalState = {
   visible: boolean;
@@ -334,13 +335,35 @@ type PlantAction = {
 };
 
 export const usePlantStore = create<PlantState & PlantAction>((set) => ({
-  name: 'Mango tree',
-  happiness: 70.68,
+  name: '',
+  happiness: 0,
   petImage: 'tree.png',
   updateHappiness: (amount) =>
     set((state) => ({
       happiness: Math.min(100, Math.max(0, state.happiness + amount)),
     })),
   setName: (name) => set({ name }),
+  // updatePlant: (name)
   setPetImage: (image) => set({ petImage: image }),
 }));
+
+
+type PlotData = {plots: (PlotFormData & {
+  happiness: number
+})[]};
+type PlotAction = {
+  removePlot: (name: string) => void;
+  addPlot: (plotData: PlotFormData) => void;
+  // updatePlot: (name: string, plotData: PlotFormData) => void
+}
+
+export const usePlotsStore = create<PlotData & PlotAction>((set) => ({
+  plots: [],
+  removePlot: (name) => set((state) => ({
+    plots: state.plots.filter(plot => plot.name != name)
+  })),
+  addPlot: (plotData) => set((state) => {
+    state.plots.push({happiness: Math.floor(Math.random() *100), ...plotData})
+    return {plots: state.plots}
+  }),
+}))

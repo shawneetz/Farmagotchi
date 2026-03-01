@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Modal, View, Text, Pressable, ScrollView } from 'react-native';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,8 +12,10 @@ import {
   useScanStore,
   usePlantStore,
 } from '../lib/stores';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function InsightsModal() {
+  const {bottom: bottomInset} = useSafeAreaInsets();
   const router = useRouter();
   const visible = useInsightsModal((state) => state.visible);
   const close = useInsightsModal((state) => state.close);
@@ -101,11 +104,16 @@ export default function InsightsModal() {
   const latestScan = scans.length > 0 ? scans[0] : null;
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
-      <View className="absolute inset-0">
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={close}>
+      <View className="absolute inset-0" style={{
+        paddingBottom: bottomInset
+      }}>
         <Pressable className="absolute inset-0 bg-neutral-900/40" onPress={close} />
 
-        <View className="absolute bottom-0 w-full rounded-t-[36px] bg-white px-6 pb-10 pt-4 shadow-2xl">
+        <Animated.View
+          entering={SlideInDown.duration(300)}
+          exiting={SlideOutDown.duration(300)}
+          className="absolute bottom-0 w-full rounded-t-[36px] bg-white px-6 pb-10 pt-4 shadow-2xl">
           {/* Handle/Close Bar */}
           <View className="mb-6 items-center">
             <View className="h-1.5 w-12 rounded-full bg-neutral-200" />
@@ -213,7 +221,7 @@ export default function InsightsModal() {
               <Text className="font-geist text-base font-bold text-white">Chat with your crop</Text>
             </LinearGradient>
           </Pressable>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

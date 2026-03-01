@@ -25,7 +25,7 @@ export const MenuItem = (props: { children: JSX.Element; href: string }) => {
       onPressIn={() => setPressed(true)}
       onPressOut={() => {
         setPressed(false);
-        router.navigate(props.href);
+        router.replace(props.href);
       }}>
       {props.children}
     </AnimatedPressable>
