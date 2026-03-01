@@ -14,38 +14,32 @@
 
 ## 3. Main Dashboard (Home)
 **Central Hub** displaying the Farmagotchi, Happiness Bar, and quick action widgets for the **Currently Selected Plot**.
-- **Top Bar:** Settings, Notifications, Profile, and a **Plot Switcher Dropdown** (e.g., showing "Tomato Patch").
+- **Top Bar:** Settings, Notifications, Profile, and a **Plot Switcher Dropdown** (e.g., showing "North Cornfield").
 - **Center:** 
-    - Interactive `PetAvatar` specific to the current plot. Tapping the pet shows its current stats and level.
-    - Daily Insights flow. A chat bubble from PetAvatar, showing weather forecast, short quip about today's actions.
-- **Bottom Navigation Tabs:** Plots | Dashboard | Tasks | Scan | Finance | Chat
+    - Interactive `PetAvatar` (e.g., Mango Tree). Tapping the pet opens the **Insights Modal**.
+    - Animated tooltip "Tap for insights" signals interactivity.
+- **Bottom Navigation Tabs:** Plots | Dashboard | Tasks | Scan | Finance
 
-## 4. Tasks Flow (Task Tracker)
+## 4. Insights & Chat Flow
+`Tap Pet on Dashboard` -> `Opens Insights Modal`
+  -> `View AI Status Summary:` Weather, Task Progress, Financial Health, and Crop Health.
+  -> `Tap 'Chat with your crop'` -> `Navigates to Chat Screen (app/chat.tsx)`
+  -> `Chat Interface:` Persistent message history, context-aware AI responses.
+  -> `Reset Chat:` Clears conversation history.
+
+## 5. Tasks Flow (Task Tracker)
 `Tap 'Tasks' Tab` -> `Daily Task List for the current plot`
-  -> `Check off a task` -> `Pet Happiness Increases (Visual Feedback)`
-  -> `Tap 'Add Task'` -> `Task Configuration Modal` -> `Save Task`
+  -> `Check off a task` -> `Pet Happiness Increases (+ Bonus)`
+  -> `Reset All Tasks:` Resets all tasks to incomplete (Manual for testing/MVP).
 
-## 5. Scan Flow (Soil and Crop AI Analysis)
-`Tap 'Scan' Tab` -> `Camera Preview Screen`
-  -> `Capture Photo` or `Select from Gallery`
-  -> `Uploading Spinner...`
-  -> `Analysis Results Modal` (Shows Health Score, Anomalies, and Tips)
-  -> `Applies Score to the current plot's Pet Happiness` -> `Return to Dashboard`
+## 6. Scan Flow (Soil and Crop AI Analysis)
+`Tap 'Scan' Tab` -> `Camera Interface`
+  -> `Capture Photo` -> `Simulated Analysis`
+  -> `Tap 'Show Analysis'` -> `Scan Analysis Modal` (Health Score, Anomalies, Tips, Happiness Impact)
+  -> `Impacts Pet Happiness` -> `Return to Scan Preview`
 
-## 6. Finance Flow (Revenue Calculator)
-`Tap 'Finance' Tab` -> `Financial Overview (Charts & Profit) for the current plot`
-  -> `Tap 'Add Transaction'` -> `Input Expense or Income`
-  -> `Save` -> `Recalculate Profit & Charts`
-  -> `If Milestone Met -> Pet Happiness Increases`
-
-## 7. Chat Flow (Farmagotchi Chat)
-`Tap 'Chat' Tab` -> `Chat Interface`
-  -> `User types question (e.g., "When should I harvest my corn?")`
-  -> `Send` (Includes silent app context: weather, recent scans, current plot details)
-  -> `AI Response streams back in the persona of the current plot's Farmagotchi`
-
-## 8. Daily Insights Flow
-*Accessed via Dashboard Widget or notification*
-`Launch App (Morning)` -> `Dashboard shows Notification Bubble on Pet`
-  -> `Tap Pet Bubble` -> `Opens Daily Insights Modal`
-  -> `Shows Weather Forecast, Weekly Recap, and Today's Recommended Actions for the current plot`
+## 7. Finance Flow (Revenue Calculator)
+`Tap 'Finance' Tab` -> `Financial Overview`
+  -> `Dynamic Charts:` Semi-circle PieChart for Income vs. Budget.
+  -> `Transactions List:` Sorted breakdown of Income and Expenses.
+  -> `Add Transaction:` (Planned) Affects Happiness and Chart data.

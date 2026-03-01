@@ -56,3 +56,16 @@ The project uses the Expo CLI for development.
 - `metro.config.js`: Metro bundler configuration with NativeWind integration.
 - `app.json`: Expo configuration file (name, slug, version, etc.).
 - `global.css`: Global styles and Tailwind directives.
+
+## Memory
+
+- **2026-02-28:** Implemented the Finance screen (`app/(tabs)/finance.tsx`) with 1:1 visual parity to Figma design. Switched the income arc to use `assets/chart.svg` via `expo-image` and updated all screen text to use the `GeistPixel` font family.
+- **2026-02-28:** Added a "mark all tasks as incomplete" button to the Tasks screen (`app/(tabs)/tasks.tsx`) and implemented the `resetAllTasks` action in `useTaskStore` (`lib/stores.ts`).
+- **2026-02-28:** Replaced the "days to growth" plant bar with "happiness" in `app/(tabs)/index.tsx`. Created `usePlantStore` in `lib/stores.ts` to manage plant name and happiness. Updated `InsightsModal.tsx` and `chat.tsx` to use dynamic plant data.
+- **2026-02-28:** Implemented the "Show Analysis" feature in the Scan screen (`app/(tabs)/scan.tsx`). Created `useScanStore` to manage analysis state and `ScanAnalysisModal.tsx` to display detailed AI crop analysis results (health score, anomalies, tips, and happiness impact).
+- **2026-02-28:** Implemented `useWeatherStore` in `lib/stores.ts` to manage weather data. Updated the weather widget in `app/(tabs)/index.tsx` and AI insights in `components/InsightsModal.tsx` to load data from the store in preparation for API integration.
+- **2026-02-28:** Implemented the AIChat feature (`app/chat.tsx`) with persistent message history via `useChatStore`, a reset functionality, and context-aware stubbed AI responses. Linked the "Chat with your crop" button in `InsightsModal.tsx` to the new chat screen.
+- **2026-02-28:** Implemented a pull-up "Insights Modal" triggered by pressing the central plant on the dashboard. Added `useInsightsModal` store, `components/InsightsModal.tsx` with AI-style status summaries, and integrated it into the global tab layout. Added an animated "Tap for insights" tooltip to the dashboard to signal interactivity.
+- **2026-02-28:** Integrated the "Plant Happiness" feature across all stores. Happiness is now influenced by task completion (with random increments), AI chat engagement (incentivizing questions with higher probability), AI scans, and financial transactions (income/expenses). Added periodic happiness boosts for good weather and positive profit on the Dashboard. *Note: Happiness calculations are currently handled in the frontend for testing/prototyping but should eventually be migrated to the backend for data integrity.*
+- **2026-02-28:** Refactored the Finance screen (`app/(tabs)/finance.tsx`) to use dynamic charts. Replaced the hardcoded SVG with a dynamic `PieChart` (semi-circle donut) from `react-native-gifted-charts` for income, and ensured the expenses bar and breakdown lists are sorted by cost with consistent color mapping.
+- **2026-02-28:** Cleaned up the `plans/` directory by removing 12 unnecessary feature-specific markdown files, keeping only core architectural documentation (`DESIGN.md`, `DATAMODEL.md`, `UserFlow.md`).
