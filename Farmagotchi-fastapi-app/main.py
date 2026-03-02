@@ -10,7 +10,30 @@ from services import UserService, PlotService, PlantService, TaskService, ScanSe
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
+# List of origins allowed to make requests
+origins = [
+    "http://localhost:3000",  # For local web development (if applicable)
+    "http://localhost:8081",  # React Native development server default (Android)
+    "http://127.0.0.1:8081",  # React Native development server default (iOS/other)
+    "https://your-react-native-app-url.onrender.com", # Replace with your deployed frontend URL on Render
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all standard methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
+
+@app.get("/")
+async def root():
+    """Root endpoint to check if the API is running."""
+    return {"message": "Welcome to the Farmagotchi API!"}
 
 # GET USER
 @app.get("/users/{userEmail}", response_model=UserResponse)
