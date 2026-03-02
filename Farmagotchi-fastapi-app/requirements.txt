@@ -8,4 +8,3 @@ asyncpg
 alembic
 python-dotenv
 supabase
-sqlalchemy_crud_plus
