@@ -4,11 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from database import getDatabase
-from schemas1 import UUID, UserResponse, UserCreate, UserUpdate, PlotResponse, PlotCreate, PlotUpdate, PlantResponse, PlantCreate, PlantUpdate, TaskUpdate, TaskCreate, TaskResponse
-from models1 import TaskCategory
-from services import UserService, PlotService, PlantService, TaskService
+from schemas1 import UUID, UserResponse, UserCreate, UserUpdate, PlotResponse, PlotCreate, PlotUpdate, PlantResponse, PlantCreate, PlantUpdate, TaskUpdate, TaskCreate, TaskResponse, ScanResponse, ScanCreate, TransactionCreate, TransactionResponse, ChatMessageResponse, ChatMessageCreate, ChatMessageCreate
+from models1 import TaskCategory, TransactionType
+from services import UserService, PlotService, PlantService, TaskService, ScanService, TransactionService, ChatService
 
 app = FastAPI()
+
+
 
 # GET USER
 @app.get("/users/{userEmail}", response_model=UserResponse)
@@ -293,3 +295,253 @@ async def delete_task(userId: UUID, plotId: UUID, taskId: UUID, database: AsyncS
     deleted = await taskservice.deleteTask(taskId)
     if not deleted:
         raise HTTPException(404, "Task does not exist.")
+
+@app.post("/users/{userId}/plots/{plotId}/scans/", response_model=ScanResponse)
+async def createScan(userId: UUID, plotId: UUID, newScan: ScanCreate, database: AsyncSession = Depends(getDatabase)):
+    """Create a new scan for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    scanservice = ScanService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    scan = await scanservice.addScan(newScan, plotId)
+    if not scan: 
+        raise HTTPException(409, "Failed to create scan.")
+
+@app.get("/users/{userId}/plots/{plotId}/scans/", response_model=list[ScanResponse])
+async def get_all_scans(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve all scans for a specific plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    scanservice = ScanService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    scans = await scanservice.getScansByPlotId(plotId)
+    if not scans:
+        raise HTTPException(404, "Scans do not exist.")
+    return scans
+
+
+@app.get("/users/{userId}/plots/{plotId}/scans/latest", response_model=ScanResponse)
+async def get_latest_scans(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve the latest scan for a specific plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    scanservice = ScanService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    latestScan = await scanservice.getLatestScan(plotId)
+    if not latestScan:
+        raise HTTPException(404, "Latest scan does not exist.")
+    return latestScan
+
+@app.get("/users/{userId}/plots/{plotId}/scans/{scanId}", response_model=ScanResponse)
+async def get_scans(userId: UUID, plotId: UUID, scanId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve a specific scan by ID."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    scanservice = ScanService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    scan = await scanservice.getScanById(scanId)
+    if not scan:
+        raise HTTPException(404, "Scan does not exist.")
+    return scan
+
+@app.delete("/users/{userId}/plots/{plotId}/scans/{scanId}")
+async def delete_scan(userId: UUID, plotId: UUID, scanId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Delete a specific scan by ID."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    scanservice = ScanService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    deleted = await scanservice.deleteScan(scanId)
+    if not deleted:
+        raise HTTPException(404, "Scan does not exist.")
+    
+@app.post("/users/{userId}/plots/{plotId}/transactions/", response_model=TransactionResponse)
+async def createTransaction(userId: UUID, plotId: UUID, newTransaction: TransactionCreate, database: AsyncSession = Depends(getDatabase)):
+    """Create a new transaction for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    transaction = await transactionservice.createTransaction(plotId, newTransaction)
+    if not transaction:
+        raise HTTPException(409, "Failed to create transaction.")
+    return transaction
+
+@app.get("/users/{userId}/plots/{plotId}/transactions/", response_model=list[TransactionResponse])
+async def getAllTransactions(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve all transactions for a specific plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    return await transactionservice.getAllTransactionsPerPlot(plotId)
+
+
+@app.get("/users/{userId}/plots/{plotId}/transactions/balance", response_model=float)
+async def get_net_balance(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve the net balance for a specific plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    netBalance = await transactionservice.getNetBalance(plotId)
+    if netBalance is None:
+        raise HTTPException(404, "Failed to calculate net balance.")
+    return netBalance
+
+@app.get("/users/{userId}/plots/{plotId}/transactions/{transactionId}", response_model=TransactionResponse)
+async def get_transaction(userId: UUID, plotId: UUID, transactionId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve a specific transaction by ID."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    transaction = await transactionservice.getTransactionById(transactionId)
+    if not transaction:
+        raise HTTPException(404, "Transaction does not exist.")
+    return transaction
+
+@app.get("/users/{userId}/plots/{plotId}/transactions/type/{type}", response_model=list[TransactionResponse])
+async def get_transactions_by_type(userId: UUID, plotId: UUID, type: TransactionType, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve all transactions of a specific type for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    return await transactionservice.getAllTransactionsByType(plotId, type)
+
+@app.delete("/users/{userId}/plots/{plotId}/transactions/{transactionId}")
+async def delete_trasactions(userId: UUID, plotId: UUID, transactionId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Delete a specific transaction by ID."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    transactionservice = TransactionService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    deleted = await transactionservice.deleteTransaction(transactionId)
+    if not deleted:
+        raise HTTPException(404, "Transaction does not exist or is already deleted.")
+    return {"message": "Transaction deleted successfully"}
+
+@app.post("/users/{userId}/plots/{plotId}/chat/", response_model=ChatMessageResponse)
+async def sendMessage(userId: UUID, plotId: UUID, newMessage: ChatMessageCreate, database: AsyncSession = Depends(getDatabase)):
+    """Send a new chat message for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    chatservice = ChatService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    message = await chatservice.addMessage(newMessage)
+    if not message:
+        raise HTTPException(409, "Failed to send message.")
+    return message
+
+@app.get("/users/{userId}/plots/{plotId}/chat/", response_model=list[ChatMessageResponse])
+async def getConversationHistory(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Retrieve the full conversation history for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    chatservice = ChatService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    messages = await chatservice.getMessagesByPlotId(plotId)
+    if messages is None:
+        raise HTTPException(404, "No messages found for this plot.")
+    return messages
+
+@app.delete("/users/{userId}/plots/{plotId}/chat/{messageId}")
+async def delete_message(userId: UUID, plotId: UUID, messageId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Delete a specific chat message by ID."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    chatservice = ChatService(database)
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    deleted = await chatservice.deleteMessage(messageId)
+    if not deleted:
+        raise HTTPException(404, "Message does not exist or is already deleted.")
+    return {"message": "Message deleted successfully"}
+
+@app.delete("/users/{userId}/plots/{plotId}/chat/")
+async def delete_all_messages(userId: UUID, plotId: UUID, database: AsyncSession = Depends(getDatabase)):
+    """Delete all chat messages for a plot."""
+    userservice = UserService(database)
+    plotservice = PlotService(database)
+    chatservice = ChatService(database)
+
+    user = await userservice.searchUserById(userId)
+    if not user:
+        raise HTTPException(404, "User does not exist.")
+    plot = await plotservice.getPlot(plotId)
+    if not plot: 
+        raise HTTPException(404, "Plot does not exist.")
+    deleted = await chatservice.deleteAllMessages(plotId)
+    if not deleted:
+        raise HTTPException(404, "Failed to delete messages.")
+    return {"message": "All messages deleted successfully"}

@@ -112,6 +112,7 @@ class TaskResponse(BaseModel):
 
 class ScanCreate(BaseModel):
     imageUrl: str = Field(..., max_length=2048)
+    plotId: UUID
     healthScore: int = Field(..., ge=0, le=100)
     anomalies: List[str] = Field(default_factory=list)
     tips: List[str] = Field(default_factory=list)

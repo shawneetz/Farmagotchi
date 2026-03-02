@@ -6,7 +6,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, func
 from schemas1 import UUID
-from models1 import Task, TaskCategory, User, Plot, Plant, Scan, Transaction
+from models1 import ChatMessage, Task, TaskCategory, User, Plot, Plant, Scan, Transaction, TransactionType, ChatMessage, MessageRole
 
 class UserCrud:
     def __init__(self, database : AsyncSession):
@@ -50,7 +50,6 @@ class UserCrud:
         await self.database.commit()
         return user
 
-        
 class PlotCrud:
     def __init__(self, database : AsyncSession):
         self.database = database
@@ -121,7 +120,7 @@ class PlantCrud:
         await self.database.commit()
         return plant
     
-    async def updateHappiness(self, plotId: UUID, rewardBonus: int) -> Plant | None:    # adds/subtracts, clamps 0-100
+    async def updateHappiness(self, plotId: UUID, rewardBonus: int) -> Plant | None:    
         plant = await self.getPlantByPlotId(plotId)
         if not plant:
             return None
@@ -129,7 +128,7 @@ class PlantCrud:
         await self.database.commit()
         return plant
     
-    async def setHappiness(self, plotId: UUID, value: int) -> Plant | None:       # sets directly, clamps 0-100
+    async def setHappiness(self, plotId: UUID, value: int) -> Plant | None:      
         plant = await self.getPlantByPlotId(plotId)
         if not plant:
             return None
@@ -198,7 +197,7 @@ class TaskCrud:
             if task.category == TaskCategory.DAILY:
                 await self.resetTask(UUID(str(task.id)))
         return True
-              # resets all daily tasks at 00:00
+
     async def resetWeeklyTasks(self, plotId: UUID) -> bool: 
         tasks = await self.getTasksByPlotId(plotId)
         if not tasks:
@@ -207,7 +206,6 @@ class TaskCrud:
             if task.category == TaskCategory.WEEKLY:
                 await self.resetTask(UUID(str(task.id)))
         return True
-              # resets all weekly tasks at 00:00 Monday
         
     async def deleteTask(self, taskId: UUID) -> bool:
         task = await self.getTaskById(taskId)
@@ -248,3 +246,75 @@ class ScanCrud:
         await self.database.delete(scan)
         await self.database.commit()
         return True
+    
+class TransactionCrud:
+    def __init__(self, database : AsyncSession):
+        self.database = database
+
+    async def addTransaction(self, newTransaction: Transaction) -> Transaction:
+        self.database.add(newTransaction)
+        await self.database.commit()
+        await self.database.refresh(newTransaction)
+        return newTransaction
+
+    async def getTransactionById(self, transactionId: UUID) -> Transaction | None:
+        transaction = await self.database.execute(select(Transaction).where(Transaction.id==transactionId))
+        return transaction.scalar_one_or_none()
+    
+    async def getTransactionsByPlotId(self, plotId: UUID) -> list[Transaction]:
+        transactions = await self.database.execute(select(Transaction).where(Transaction.plotId==plotId))
+        return list(transactions.scalars().all())
+    
+    async def getTransactionsByType(self, plotId: UUID, type: TransactionType) -> list[Transaction]:
+        transactions = await self.database.execute(select(Transaction).where((Transaction.plotId==plotId)&(Transaction.type==type)))
+        return list(transactions.scalars().all())   
+    
+    async def getRecentTransactions(self, plotId: UUID, limit: int = 10) -> list[Transaction]:  # used for AI context injection
+        transactions = await self.database.execute(select(Transaction).where(Transaction.plotId==plotId).order_by(Transaction.createdAt.desc()).limit(limit))
+        return list(transactions.scalars().all())
+    
+    async def deleteTransaction(self, transactionId: UUID) -> bool:
+        transaction = await self.getTransactionById(transactionId)
+        if not transaction:
+            return False
+        await self.database.delete(transaction)
+        await self.database.commit()
+        return True
+    
+class ChatCrud:
+    def __init__(self, database : AsyncSession):
+        self.database = database
+    
+    async def addMessage(self, newMessage: ChatMessage) -> ChatMessage:
+        self.database.add(newMessage)
+        await self.database.commit()
+        await self.database.refresh(newMessage)
+        return newMessage
+
+    async def getMessagesByPlotId(self, plotId: UUID) -> list[ChatMessage]:
+        messages = await self.database.execute(select(ChatMessage).where(ChatMessage.plotId==plotId))
+        return list(messages.scalars().all())
+
+    async def getRecentMessages(self, plotId: UUID, limit: int = 20) -> list[ChatMessage]:  # used for conversation history
+        messages = await self.database.execute(select(ChatMessage).where(ChatMessage.plotId==plotId).order_by(ChatMessage.createdAt.desc()).limit(limit))
+        return list(messages.scalars().all())
+    
+    async def getMessageById(self, messageId: UUID) -> ChatMessage | None:
+        message = await self.database.execute(select(ChatMessage).where(ChatMessage.id==messageId))
+        return message.scalar_one_or_none()
+
+    async def deleteAMessageById(self, messageId: UUID) -> bool:     # sets content to empty string, role to "system"
+        message = await self.getMessageById(messageId)
+        if not message:
+            return False
+        await self.database.delete(message)
+        await self.database.commit()
+        return True
+
+    async def deleteMessages(self, plotId: UUID) -> bool:
+        messages = await self.getMessagesByPlotId(plotId)
+        for message in messages:
+            await self.database.delete(message)
+        await self.database.commit()
+        return True
+
