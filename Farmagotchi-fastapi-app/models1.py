@@ -2,7 +2,7 @@
     This file contains the data models to structure the data in the dataBase
     matching the rows in the supaBase [postgres] dataBase used in this project.
 """
-from sqlalchemy import Float, String, Integer, DateTime, Boolean, Text, Numeric, ForeignKey, Enum
+from sqlalchemy import Float, String, Integer, DateTime, Boolean, ForeignKey, Enum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.sql import func
@@ -13,6 +13,7 @@ import enum
 
 class Base(DeclarativeBase):
     pass
+
 
 class TimestampMixin:
     """Reusable timestamp mixin."""
@@ -30,45 +31,32 @@ class TimestampMixin:
     )
 
 
-class LocationMixin:
-    """Mixin providing a single JSON column to hold location data.
-
-    The JSON object is expected to contain `latitude`, `longitude`, and
-    optionally `city`. This allows any inheriting model to store the
-    location in one database field while still keeping a clear schema in
-    Python.
-    """
-
-    location: Mapped[dict] = mapped_column(
-        JSON,
-        nullable=False,
-        comment="JSON blob with latitude, longitude, and optional city"
-    )
-
 class UUIDMixin:
     """Reusable UUID primary key mixin."""
-    id: Mapped[UUID] = mapped_column( # Modified from uuid --> UUID
+    id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid4
     )
 
-class User(UUIDMixin, TimestampMixin, LocationMixin, Base):
+# ── User ─────────────────────────────────────────────────────────────────────
+
+class User(UUIDMixin, TimestampMixin, Base):
     """
     Represents the farmer / account owner.
-
-    Inherits :class:`LocationMixin` so a JSON `location` field is available
-    with latitude, longitude and optional city data in a single column.
     """
 
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
+    location: Mapped[str] = mapped_column(String(255), nullable=False)  # e.g., "Los Baños"
     isDeleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     plots = relationship("Plot", back_populates="user", cascade="all, delete-orphan")
 
+
+# ── Plot ─────────────────────────────────────────────────────────────────────
 
 class Plot(UUIDMixin, TimestampMixin, Base):
     """
@@ -88,27 +76,24 @@ class Plot(UUIDMixin, TimestampMixin, Base):
     cropType: Mapped[str] = mapped_column(String(100), nullable=False)
     sizeArea: Mapped[float | None] = mapped_column(Float)
     isActive: Mapped[bool] = mapped_column(Boolean, default=True)
+    isDeleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
     user = relationship("User", back_populates="plots")
-    farmagotchi = relationship("Farmagotchi", back_populates="plot", uselist=False)
+    plants = relationship("Plant", back_populates="plot", uselist=False)
     tasks = relationship("Task", back_populates="plot", cascade="all, delete-orphan")
     scans = relationship("Scan", back_populates="plot", cascade="all, delete-orphan")
     transactions = relationship("Transaction", back_populates="plot", cascade="all, delete-orphan")
     chatMessages = relationship("ChatMessage", back_populates="plot", cascade="all, delete-orphan")
 
 
-class EvolutionStageEnum(str, enum.Enum):
-    EGG = "EGG"
-    BABY = "BABY"
-    JUVENILE = "JUVENILE"
-    ADULT = "ADULT"
+# ── Plants  ───────────────────────────────────────────────────
 
-class Farmagotchi(UUIDMixin, TimestampMixin, Base):
+class Plant(UUIDMixin, TimestampMixin, Base):
     """
     Digital pet associated 1-to-1 with a plot.
     """
 
-    __tablename__ = "farmagotchi"
+    __tablename__ = "plants"
 
     plotId: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -118,26 +103,21 @@ class Farmagotchi(UUIDMixin, TimestampMixin, Base):
     )
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    petType: Mapped[str] = mapped_column(String(100), nullable=False)
-
-    level: Mapped[int] = mapped_column(Integer, default=1)
+    plantImage: Mapped[str] = mapped_column(String(255), nullable=False)  # e.g., "tree.png"
     happiness: Mapped[int] = mapped_column(Integer, default=50)
-
-    EvolutionStage: Mapped[EvolutionStageEnum] = mapped_column(
-        Enum(EvolutionStageEnum),
-        default=EvolutionStageEnum.EGG,
-        nullable=False
-    )
-
-    plot = relationship("Plot", back_populates="farmagotchi")
+    isDeleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    plot = relationship("Plot", back_populates="plants")
 
 
-class TaskFrequency(str, enum.Enum):
-    DAILY = "DAILY"
-    WEEKLY = "WEEKLY"
-    ONCE = "ONCE"
+# ── Task ─────────────────────────────────────────────────────────────────────
 
-class Task(UUIDMixin, Base):
+class TaskCategory(str, TimestampMixin, enum.Enum):
+    DAILY = "daily"
+    WEEKLY = "weekly"
+    MISCELLANEOUS = "miscellaneous"
+
+
+class Task(UUIDMixin, Base, TimestampMixin):
     """
     Daily or recurring plot task.
     """
@@ -152,21 +132,16 @@ class Task(UUIDMixin, Base):
     )
 
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(String)
-
-    frequency: Mapped[TaskFrequency] = mapped_column(Enum(TaskFrequency))
+    category: Mapped[TaskCategory] = mapped_column(Enum(TaskCategory), nullable=False)
     happinessReward: Mapped[int] = mapped_column(Integer, default=10)
 
     isCompleted: Mapped[bool] = mapped_column(Boolean, default=False)
     lastCompletedAt: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    createdAt: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default="now()"
-    )
-
     plot = relationship("Plot", back_populates="tasks")
 
+
+# ── Scan ─────────────────────────────────────────────────────────────────────
 
 class Scan(UUIDMixin, Base):
     """
@@ -184,10 +159,8 @@ class Scan(UUIDMixin, Base):
 
     imageUrl: Mapped[str] = mapped_column(String, nullable=False)
     healthScore: Mapped[int] = mapped_column(Integer)
-
     anomalies: Mapped[list[str]] = mapped_column(JSON)
     tips: Mapped[list[str]] = mapped_column(JSON)
-
     happinessImpact: Mapped[int] = mapped_column(Integer)
 
     createdAt: Mapped[datetime] = mapped_column(
@@ -197,9 +170,13 @@ class Scan(UUIDMixin, Base):
 
     plot = relationship("Plot", back_populates="scans")
 
+
+# ── Transaction ───────────────────────────────────────────────────────────────
+
 class TransactionType(str, enum.Enum):
-    INCOME = "INCOME"
-    EXPENSE = "EXPENSE"
+    INCOME = "income"
+    EXPENSE = "expense"
+
 
 class Transaction(UUIDMixin, Base):
     """
@@ -215,24 +192,29 @@ class Transaction(UUIDMixin, Base):
         index=True
     )
 
-    type: Mapped[TransactionType] = mapped_column(Enum(TransactionType))
-    amount: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
-
-    category: Mapped[str] = mapped_column(String(100), nullable=False)
-    notes: Mapped[str | None] = mapped_column(String)
+    type: Mapped[TransactionType] = mapped_column(Enum(TransactionType), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)  # e.g., "Rice", "Fertilizer"
+    cost: Mapped[float] = mapped_column(Float, nullable=False)
 
     transactionDate: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    createdAt: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default="now()")
+    createdAt: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
 
     plot = relationship("Plot", back_populates="transactions")
 
-class MessageSender(str, enum.Enum):
-    USER = "USER"
-    FARMAGOTCHI = "FARMAGOTCHI"
+
+# ── Chat Message ──────────────────────────────────────────────────────────────
+
+class MessageRole(str, enum.Enum):
+    USER = "user"
+    ASSISTANT = "assistant"
+
 
 class ChatMessage(UUIDMixin, Base):
     """
-    Conversation history between user and Farmagotchi.
+    Conversation history between user and Plants.
     """
 
     __tablename__ = "chatMessages"
@@ -244,10 +226,8 @@ class ChatMessage(UUIDMixin, Base):
         index=True
     )
 
-    sender: Mapped[MessageSender] = mapped_column(Enum(MessageSender))
+    role: Mapped[MessageRole] = mapped_column(Enum(MessageRole), nullable=False)
     content: Mapped[str] = mapped_column(String, nullable=False)
-
-    contextSnapshot: Mapped[dict | None] = mapped_column(JSON)
 
     createdAt: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

@@ -3,39 +3,35 @@
     to ensure data integrity, before inserting data to the database.
 """
 
-
 from pydantic import BaseModel, ConfigDict, Field, EmailStr, field_validator
 from uuid import UUID
 from datetime import datetime
-from decimal import Decimal
-from typing import Optional, List
+from typing import Optional, List, Literal
 
-from models import EvolutionStageEnum, TaskFrequency, TransactionType, MessageSender
 
-class LocationSchema(BaseModel):
-    latitude: float = Field(..., ge=-90, le=90)
-    longitude: float = Field(..., ge=-180, le=180)
-    city: Optional[str] = Field(None, max_length=255)
+# ── User ────────────────────────────────────────────────────────────────────
 
 class UserCreate(BaseModel):
     email: EmailStr
     name: str = Field(..., min_length=2, max_length=255)
-    location: LocationSchema
+    location: str = Field(..., max_length=255)  # e.g., "Los Baños"
 
 class UserUpdate(BaseModel):
-    email: EmailStr
     name: Optional[str] = Field(None, min_length=2, max_length=255)
-    location: Optional[LocationSchema] = None
+    location: Optional[str] = Field(None, max_length=255)
 
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
     name: str
-    location: LocationSchema
+    location: str
     createdAt: datetime
     updatedAt: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# ── Plot ─────────────────────────────────────────────────────────────────────
 
 class PlotCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=255)
@@ -47,7 +43,7 @@ class PlotUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=2, max_length=255)
     cropType: Optional[str] = Field(None, min_length=2, max_length=100)
     sizeArea: Optional[float] = Field(None, gt=0)
-    isActive: Optional[bool]
+    isActive: Optional[bool] = None
 
 class PlotResponse(BaseModel):
     id: UUID
@@ -62,54 +58,61 @@ class PlotResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# ── Plant/Pet ──────────────────────────────────────────────────
+
 class PlantCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=255)
-    petType: str = Field(..., min_length=2, max_length=100)
+    plotId: UUID 
+    petImage: str = Field(..., max_length=255)  # e.g., "tree.png"
 
 class PlantUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=2, max_length=255)
+    petImage: Optional[str] = Field(None, max_length=255)
 
 class PlantResponse(BaseModel):
     id: UUID
     plotId: UUID
     name: str
-    petType: str
-    level: int
+    petImage: str
     happiness: int
-    evolutionStage: EvolutionStageEnum
     createdAt: datetime
     updatedAt: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ── Task ─────────────────────────────────────────────────────────────────────
 
 class TaskCreate(BaseModel):
     title: str = Field(..., min_length=2, max_length=255)
-    description: Optional[str] = Field(None, max_length=1000)
-    frequency: TaskFrequency
+    category: Literal["daily", "weekly", "miscellaneous"]
     happinessReward: int = Field(..., ge=0, le=100)
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=2, max_length=255)
-    description: Optional[str] = Field(None, max_length=1000)
-    frequency: Optional[TaskFrequency]
+    category: Optional[Literal["daily", "weekly", "miscellaneous"]] = None
     happinessReward: Optional[int] = Field(None, ge=0, le=100)
-    isCompleted: Optional[bool]
+    isCompleted: Optional[bool] = None
 
 class TaskResponse(BaseModel):
     id: UUID
     plotId: UUID
     title: str
-    description: Optional[str]
-    frequency: TaskFrequency
+    category: str
     happinessReward: int
     isCompleted: bool
     lastCompletedAt: Optional[datetime]
     createdAt: datetime
+    updatedAt: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# ── Scan ─────────────────────────────────────────────────────────────────────
+
 class ScanCreate(BaseModel):
     imageUrl: str = Field(..., max_length=2048)
+    plotId: UUID
     healthScore: int = Field(..., ge=0, le=100)
     anomalies: List[str] = Field(default_factory=list)
     tips: List[str] = Field(default_factory=list)
@@ -134,36 +137,48 @@ class ScanResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# ── Transaction ───────────────────────────────────────────────────────────────
+
 class TransactionCreate(BaseModel):
-    type: TransactionType
-    amount: Decimal = Field(..., gt=0)
-    category: str = Field(..., min_length=2, max_length=100)
-    notes: Optional[str] = Field(None, max_length=1000)
+    type: Literal["income", "expense"]
+    name: str = Field(..., min_length=2, max_length=100)  # e.g., "Rice", "Fertilizer"
+    cost: float = Field(..., gt=0)
     transactionDate: datetime
 
 class TransactionResponse(BaseModel):
     id: UUID
-    plot_id: UUID
-    type: TransactionType
-    amount: Decimal
-    category: str
-    notes: Optional[str]
+    plotId: UUID
+    type: str
+    name: str
+    cost: float
     transactionDate: datetime
     createdAt: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# ── Chat Message ──────────────────────────────────────────────────────────────
+
 class ChatMessageCreate(BaseModel):
-    sender: MessageSender
+    role: Literal["user", "assistant"]
     content: str = Field(..., min_length=1, max_length=2000)
-    contextSnapshot: Optional[dict]
 
 class ChatMessageResponse(BaseModel):
     id: UUID
     plotId: UUID
-    sender: MessageSender
+    role: str
     content: str
-    contextSnapshot: Optional[dict]
     createdAt: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# ── Weather ───────────────────────────────────────────────────────────────────
+
+class WeatherResponse(BaseModel):
+    location: str
+    currentTemp: float
+    highTemp: float
+    lowTemp: float
+    condition: Literal["cloud", "sun", "cloud-rain", "cloud-lightning", "cloud-snow", "wind", "cloud-drizzle"]
